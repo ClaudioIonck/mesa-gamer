@@ -103,6 +103,18 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
 .zoom{display:inline-grid;grid-auto-flow:column;gap:2px;padding:2px;border:1px solid var(--line);border-radius:7px}
 .zoom button{font:500 12px var(--mono);color:var(--fg);background:transparent;border:0;border-radius:5px;padding:5px 9px;cursor:pointer;min-width:30px;font-variant-numeric:tabular-nums}
 .zoom button:hover{background:var(--btn)}
+.dl{position:relative}
+.dl-btn{display:inline-flex;align-items:center;gap:7px;font:600 13px var(--body);color:#fff;background:var(--accent);border:0;border-radius:7px;padding:8px 13px;cursor:pointer}
+.dl-btn:hover{filter:brightness(1.08)}
+.dl-btn svg{width:14px;height:14px}
+.dl-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:20;min-width:240px;display:grid;gap:2px;padding:5px;background:var(--panel);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.22)}
+.dl-menu button{display:grid;gap:2px;text-align:left;background:transparent;border:0;border-radius:7px;padding:9px 11px;cursor:pointer;color:var(--fg)}
+.dl-menu button:hover,.dl-menu button:focus-visible{background:var(--btn)}
+.dl-menu b{font:600 13px var(--body)}
+.dl-menu span{font:400 11.5px var(--mono);color:var(--muted)}
+.dl-status{font:500 12px var(--body);color:var(--muted);min-height:1em}
+.dl-status.err{color:var(--bad)}
 .sheet-scroll{flex:1;overflow:auto;padding-top:16px;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px));
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 #sheetHost{width:100%;margin:0 auto}
@@ -172,6 +184,17 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
       <button id="sMM" aria-pressed="false">mm</button>
       <button id="sCM" aria-pressed="true">cm</button>
     </div>
+    <div class="dl">
+      <button class="dl-btn" id="dlBtn" aria-haspopup="menu" aria-expanded="false">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>
+        Download
+      </button>
+      <div class="dl-menu" id="dlMenu" role="menu" hidden>
+        <button role="menuitem" data-fmt="svg"><b>SVG · vetorial</b><span>Abre em CAD e programas de desenho</span></button>
+        <button role="menuitem" data-fmt="png"><b>PNG · alta resolução</b><span>A3 ~300 dpi · imprimir ou WhatsApp</span></button>
+      </div>
+    </div>
+    <span class="dl-status" id="dlStatus" role="status"></span>
     <div class="zoom" role="group" aria-label="Zoom da prancha">
       <button id="zOut" aria-label="Diminuir zoom">−</button>
       <button id="zFit" title="Ajustar à tela">100%</button>
@@ -1066,6 +1089,51 @@ if(typeof module!=='undefined') module.exports={buildSheet};
   $('zOut').addEventListener('click',()=>setZoom(zoom/1.5));
   $('zFit').addEventListener('click',()=>setZoom(1));
   scroller.addEventListener('wheel',e=>{ if(e.ctrlKey||e.metaKey){ e.preventDefault(); setZoom(zoom*(e.deltaY<0?1.15:1/1.15)); } },{passive:false});
+  // ---------- Download (SVG / PNG) ----------
+  const dlBtn=$('dlBtn'), dlMenu=$('dlMenu'), dlStatus=$('dlStatus');
+  function openMenu(open){ dlMenu.hidden=!open; dlBtn.setAttribute('aria-expanded',open); if(open) dlMenu.querySelector('button').focus(); }
+  dlBtn.addEventListener('click',e=>{ e.stopPropagation(); openMenu(dlMenu.hidden); });
+  document.addEventListener('click',e=>{ if(!dlMenu.hidden && !dlMenu.contains(e.target)) openMenu(false); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !dlMenu.hidden){ openMenu(false); dlBtn.focus(); } });
+  function status(msg,err){ dlStatus.textContent=msg; dlStatus.classList.toggle('err',!!err); clearTimeout(status.t); if(msg) status.t=setTimeout(()=>dlStatus.textContent='',4000); }
+  function svgToPng(svgStr,width){
+    return new Promise((resolve,reject)=>{
+      const img=new Image();
+      const url=URL.createObjectURL(new Blob([svgStr],{type:'image/svg+xml;charset=utf-8'}));
+      img.onload=()=>{
+        try{
+          const h=Math.round(width*990/1400), c=document.createElement('canvas'); c.width=width; c.height=h;
+          const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,width,h); g.drawImage(img,0,0,width,h);
+          URL.revokeObjectURL(url);
+          c.toBlob(b=>b?resolve(b):reject(new Error('png')),'image/png');
+        }catch(err){ URL.revokeObjectURL(url); reject(err); }
+      };
+      img.onerror=()=>{ URL.revokeObjectURL(url); reject(new Error('svg')); };
+      img.src=url;
+    });
+  }
+  async function save(filename,data){
+    // Dentro do claude.ai: capacidade "downloads" (o viewer confirma). Fora (GitHub/Vercel): link de download comum.
+    const dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null;
+    if(dl){ await dl.save({filename,data}); return; }
+    const blob = data instanceof Blob ? data : new Blob([data],{type:'image/svg+xml'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  }
+  dlMenu.querySelectorAll('button').forEach(b=>b.addEventListener('click',async()=>{
+    openMenu(false);
+    const u=curUnit(), svgStr=buildSheet(u), base='mesa-gamer-prancha-tecnica-'+u;
+    try{
+      if(b.dataset.fmt==='svg'){ status('Preparando SVG…'); await save(base+'.svg','<?xml version="1.0" encoding="UTF-8"?>\n'+svgStr); }
+      else { status('Gerando PNG em alta resolução…'); const png=await svgToPng(svgStr,4800); await save(base+'.png',png); }
+      status('Download pronto');
+    }catch(err){
+      const code=err&&err.code;
+      if(code==='declined') status('Download cancelado');
+      else if(code==='rate_limited') status('Já existe um download aguardando confirmação',true);
+      else status('Não foi possível baixar aqui. Abra o site fora do chat e tente de novo.',true);
+    }
+  }));
   if(location.hash==='#svg') setMode('svg');
 })();
 </script>
