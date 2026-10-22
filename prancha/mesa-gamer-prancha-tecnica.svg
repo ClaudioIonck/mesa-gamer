@@ -67,6 +67,7 @@
 <rect x="145" y="139.67" width="406.67" height="20" class="steel"/>
 <rect x="131.67" y="139.67" width="13.33" height="238.33" class="steel"/>
 <rect x="551.67" y="139.67" width="13.33" height="238.33" class="steel"/>
+<rect x="341.67" y="139.67" width="13.33" height="20" class="hid"/>
 <rect x="115" y="128" width="466.67" height="11.67" rx="1.67" class="wood"/>
 <rect x="168.33" y="128" width="26.67" height="11.67" class="hid"/>
 <rect x="335" y="128" width="26.67" height="11.67" class="hid"/>
@@ -143,6 +144,7 @@
 <path d="M744.67 139.67 H968 V378 H744.67 Z M764.67 159.67 H948 V358 H764.67 Z" class="steel" fill-rule="evenodd"/>
 <rect x="744.67" y="139.67" width="13.33" height="20" class="hid"/>
 <rect x="891.33" y="139.67" width="13.33" height="20" class="hid"/>
+<rect x="758" y="139.67" width="133.33" height="20" class="hid"/>
 <path d="M948 176.33 L964.67 176.33 L964.67 139.67" class="hid"/>
 <rect x="728" y="128" width="256.67" height="11.67" rx="1.67" class="wood"/>
 <circle cx="898" cy="149.67" r="1.3" class="ldot"/>
@@ -220,9 +222,11 @@
 <rect x="551.67" y="528.67" width="13.33" height="223.33" class="steel"/>
 <rect x="551.67" y="528.67" width="13.33" height="20" class="thin"/>
 <rect x="551.67" y="732" width="13.33" height="20" class="thin"/>
-<rect x="145" y="732" width="406.67" height="13.33" class="steel"/>
+<rect x="145" y="738.67" width="406.67" height="13.33" class="steel"/>
 <rect x="145" y="592" width="406.67" height="13.33" class="steel"/>
-<text x="248.33" y="741.17" class="lts" text-anchor="middle">TRAVESSA FRONTAL 6 × 4</text>
+<rect x="341.67" y="605.33" width="13.33" height="133.33" class="steel"/>
+<text x="351.33" y="672" class="lts" text-anchor="middle" transform="rotate(-90 351.33 672)">TRAVESSA CENTRAL</text>
+<text x="248.33" y="747.83" class="lts" text-anchor="middle">TRAVESSA FRONTAL 6 × 4</text>
 <text x="248.33" y="601.17" class="lts" text-anchor="middle">TRAVESSA TRASEIRA 6 × 4</text>
 <rect x="181.67" y="532" width="333.33" height="50" class="tray"/>
 <rect x="185.67" y="536" width="325.33" height="42" class="perf"/>
@@ -233,6 +237,11 @@
 <rect x="501.67" y="550.33" width="26.67" height="13.33" rx="2.67" class="slot"/>
 <line x1="515" y1="462" x2="515" y2="577" class="ax"/>
 <line x1="155" y1="557" x2="558.33" y2="557" class="ax"/>
+<line x1="348.33" y1="462" x2="348.33" y2="778.67" class="ax"/>
+<line x1="358" y1="605.33" x2="379" y2="605.33" class="d"/>
+<line x1="358" y1="738.67" x2="379" y2="738.67" class="d"/>
+<line x1="375" y1="605.33" x2="375" y2="738.67" class="d" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="372.4" y="672" class="dt" text-anchor="middle" transform="rotate(-90 372.4 672)">travessa central 40</text>
 <text x="348.33" y="577" class="lts" text-anchor="middle">CALHA ORGANIZADORA PERFURADA · 100 × 15 × 11</text>
 <text x="348.33" y="759.67" class="lts" text-anchor="middle">FRENTE — LADO DO USUÁRIO</text>
 <text x="261.67" y="523" class="lts" text-anchor="middle">FUNDO</text>
@@ -272,10 +281,10 @@
 <line x1="568" y1="592" x2="625.67" y2="592" class="d"/>
 <line x1="621.67" y1="512" x2="621.67" y2="592" class="d" marker-start="url(#ar)" marker-end="url(#ar)"/>
 <text x="619.07" y="552" class="dt" text-anchor="middle" transform="rotate(-90 619.07 552)">24</text>
-<line x1="568" y1="745.33" x2="625.67" y2="745.33" class="d"/>
+<line x1="568" y1="752" x2="625.67" y2="752" class="d"/>
 <line x1="574.67" y1="768.67" x2="625.67" y2="768.67" class="d"/>
-<line x1="621.67" y1="745.33" x2="621.67" y2="768.67" class="d" marker-start="url(#ar)" marker-end="url(#ar)"/>
-<text x="619.07" y="757" class="dt" text-anchor="middle" transform="rotate(-90 619.07 757)">5</text>
+<line x1="621.67" y1="752" x2="621.67" y2="768.67" class="d" marker-start="url(#ar)" marker-end="url(#ar)"/>
+<text x="619.07" y="760.33" class="dt" text-anchor="middle" transform="rotate(-90 619.07 760.33)">5</text>
 <line x1="181.67" y1="585" x2="181.67" y2="635" class="d"/>
 <line x1="515" y1="585" x2="515" y2="635" class="d"/>
 <line x1="181.67" y1="631" x2="515" y2="631" class="d" marker-start="url(#ar)" marker-end="url(#ar)"/>
@@ -352,40 +361,43 @@
 <text x="836" y="754" class="lts">Soldas contínuas e lixadas</text>
 <rect x="1040" y="440" width="330" height="24" class="th"/>
 <text x="1050" y="456.5" class="tht">FICHA TÉCNICA DO PROJETO</text>
-<line x1="1040" y1="493.5" x2="1370" y2="493.5" class="row"/>
-<text x="1050" y="482.25" class="tk">TAMPO</text>
-<text x="1144" y="482.55" class="tv">Madeira maciça · 140 × 77 × 3,5</text>
-<line x1="1040" y1="523" x2="1370" y2="523" class="row"/>
-<text x="1050" y="511.75" class="tk">ACABAMENTO</text>
-<text x="1144" y="512.05" class="tv">Verniz brilho, superfície lisa</text>
-<line x1="1040" y1="552.5" x2="1370" y2="552.5" class="row"/>
-<text x="1050" y="541.25" class="tk">BOLEADO</text>
-<text x="1144" y="541.55" class="tv">R0,5 nas arestas e nos furos</text>
-<line x1="1040" y1="582" x2="1370" y2="582" class="row"/>
-<text x="1050" y="570.75" class="tk">CANTOS</text>
-<text x="1144" y="571.05" class="tv">R2,5</text>
-<line x1="1040" y1="611.5" x2="1370" y2="611.5" class="row"/>
-<text x="1050" y="600.25" class="tk">BASE</text>
-<text x="1144" y="600.55" class="tv">Aço carbono · metalon 6 × 4 · ch. 16</text>
-<line x1="1040" y1="641" x2="1370" y2="641" class="row"/>
-<text x="1050" y="629.75" class="tk">ALTURAS</text>
-<text x="1144" y="630.05" class="tv">Base 71,5 · total 75</text>
-<line x1="1040" y1="670.5" x2="1370" y2="670.5" class="row"/>
-<text x="1050" y="659.25" class="tk">RECUO</text>
-<text x="1144" y="659.55" class="tv">Quadros a 5 das 4 bordas</text>
-<line x1="1040" y1="700" x2="1370" y2="700" class="row"/>
-<text x="1050" y="688.75" class="tk">TRAVESSAS</text>
-<text x="1144" y="689.05" class="tv">Frente a 5 · trás a 24 do fundo</text>
-<line x1="1040" y1="729.5" x2="1370" y2="729.5" class="row"/>
-<text x="1050" y="718.25" class="tk">ORGANIZADOR</text>
-<text x="1144" y="718.55" class="tv">Calha perfurada 100 × 15 × 11</text>
-<line x1="1040" y1="759" x2="1370" y2="759" class="row"/>
-<text x="1050" y="747.75" class="tk">PASSA-CABOS</text>
-<text x="1144" y="748.05" class="tv">3× 8 × 4 · centros 20 / 70 / 120</text>
-<text x="1050" y="777.25" class="tk">PINTURA</text>
-<text x="1144" y="777.55" class="tv">Eletrostática a pó, preto fosco</text>
-<rect x="1040" y="440" width="330" height="348.5" class="frame2"/>
-<line x1="1136" y1="464" x2="1136" y2="788.5" class="row"/>
+<line x1="1040" y1="492" x2="1370" y2="492" class="row"/>
+<text x="1050" y="481.5" class="tk">TAMPO</text>
+<text x="1144" y="481.8" class="tv">Madeira maciça · 140 × 77 × 3,5</text>
+<line x1="1040" y1="520" x2="1370" y2="520" class="row"/>
+<text x="1050" y="509.5" class="tk">ACABAMENTO</text>
+<text x="1144" y="509.8" class="tv">Verniz brilho, superfície lisa</text>
+<line x1="1040" y1="548" x2="1370" y2="548" class="row"/>
+<text x="1050" y="537.5" class="tk">BOLEADO</text>
+<text x="1144" y="537.8" class="tv">R0,5 nas arestas e nos furos</text>
+<line x1="1040" y1="576" x2="1370" y2="576" class="row"/>
+<text x="1050" y="565.5" class="tk">CANTOS</text>
+<text x="1144" y="565.8" class="tv">R2,5</text>
+<line x1="1040" y1="604" x2="1370" y2="604" class="row"/>
+<text x="1050" y="593.5" class="tk">BASE</text>
+<text x="1144" y="593.8" class="tv">Aço carbono · metalon 6 × 4 · ch. 16</text>
+<line x1="1040" y1="632" x2="1370" y2="632" class="row"/>
+<text x="1050" y="621.5" class="tk">ALTURAS</text>
+<text x="1144" y="621.8" class="tv">Base 71,5 · total 75</text>
+<line x1="1040" y1="660" x2="1370" y2="660" class="row"/>
+<text x="1050" y="649.5" class="tk">RECUO</text>
+<text x="1144" y="649.8" class="tv">Quadros a 5 das 4 bordas</text>
+<line x1="1040" y1="688" x2="1370" y2="688" class="row"/>
+<text x="1050" y="677.5" class="tk">TRAVESSAS</text>
+<text x="1144" y="677.8" class="tv">Frente a 5 · trás a 24 do fundo</text>
+<line x1="1040" y1="716" x2="1370" y2="716" class="row"/>
+<text x="1050" y="705.5" class="tk">TRAV. CENTRAL</text>
+<text x="1144" y="705.8" class="tv">No eixo · 40 entre travessas · 6 × 4</text>
+<line x1="1040" y1="744" x2="1370" y2="744" class="row"/>
+<text x="1050" y="733.5" class="tk">ORGANIZADOR</text>
+<text x="1144" y="733.8" class="tv">Calha perfurada 100 × 15 × 11</text>
+<line x1="1040" y1="772" x2="1370" y2="772" class="row"/>
+<text x="1050" y="761.5" class="tk">PASSA-CABOS</text>
+<text x="1144" y="761.8" class="tv">3× 8 × 4 · centros 20 / 70 / 120</text>
+<text x="1050" y="789.5" class="tk">PINTURA</text>
+<text x="1144" y="789.8" class="tv">Eletrostática a pó, preto fosco</text>
+<rect x="1040" y="440" width="330" height="360" class="frame2"/>
+<line x1="1136" y1="464" x2="1136" y2="800" class="row"/>
 <rect x="1043" y="35.5" width="30" height="14" class="vcb"/>
 <text x="1058" y="46" class="vc" text-anchor="middle">M04</text>
 <text x="1079" y="46" class="vt">PERSPECTIVA ISOMÉTRICA</text>
@@ -409,15 +421,18 @@
 <polygon points="1141.37,122.58 1308.31,218.96 1302.83,222.13 1135.9,125.74" class="isoS1"/>
 <polygon points="1135.9,135.22 1302.83,231.6 1302.83,222.13 1135.9,125.74" class="isoS2"/>
 <polygon points="1308.31,228.44 1302.83,231.6 1302.83,222.13 1308.31,218.96" class="isoS3"/>
+<polygon points="1216.63,172.35 1222.1,175.51 1167.37,207.11 1161.9,203.95" class="isoS1"/>
+<polygon points="1161.9,213.44 1167.37,216.59 1167.37,207.11 1161.9,203.95" class="isoS2"/>
+<polygon points="1222.1,185 1167.37,216.59 1167.37,207.11 1222.1,175.51" class="isoS3"/>
 <polygon points="1334.31,203.95 1339.78,207.11 1331.57,211.85 1326.1,208.69" class="isoS1"/>
 <polygon points="1326.1,321.66 1331.57,324.82 1331.57,211.85 1326.1,208.69" class="isoS2"/>
 <polygon points="1339.78,320.08 1331.57,324.82 1331.57,211.85 1339.78,207.11" class="isoS3"/>
-<polygon points="1083.9,155.76 1250.84,252.14 1245.37,255.3 1078.43,158.92" class="isoS1"/>
-<polygon points="1078.43,168.4 1245.37,264.78 1245.37,255.3 1078.43,158.92" class="isoS2"/>
-<polygon points="1250.84,261.63 1245.37,264.78 1245.37,255.3 1250.84,252.14" class="isoS3"/>
 <polygon points="1326.1,312.19 1331.57,315.34 1256.31,358.79 1250.84,355.63" class="isoS1"/>
 <polygon points="1250.84,365.12 1256.31,368.27 1256.31,358.79 1250.84,355.63" class="isoS2"/>
 <polygon points="1331.57,324.82 1256.31,368.27 1256.31,358.79 1331.57,315.34" class="isoS3"/>
+<polygon points="1081.17,157.34 1248.1,253.72 1242.63,256.88 1075.69,160.5" class="isoS1"/>
+<polygon points="1075.69,169.98 1242.63,266.37 1242.63,256.88 1075.69,160.5" class="isoS2"/>
+<polygon points="1248.1,263.2 1242.63,266.37 1242.63,256.88 1248.1,253.72" class="isoS3"/>
 <polygon points="1326.1,208.69 1331.57,211.85 1256.31,255.3 1250.84,252.14" class="isoS1"/>
 <polygon points="1250.84,261.63 1256.31,264.78 1256.31,255.3 1250.84,252.14" class="isoS2"/>
 <polygon points="1331.57,221.33 1256.31,264.78 1256.31,255.3 1331.57,211.85" class="isoS3"/>

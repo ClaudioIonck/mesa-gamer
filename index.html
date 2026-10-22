@@ -466,6 +466,10 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
     const railsZ = P.railMode===2 ? [baseW/2-B/2, rearEdge+P.rearSetback+B/2] : [0];
     railsZ.forEach(z=>{ const lg=box(longLen,A,B,steelMat); lg.position.set(0,yRail,z*MM); dyn.add(lg); });
 
+    // Travessa central: transversal, no eixo da mesa (x = 0), ligando a travessa frontal à traseira
+    const cz0=rearEdge+P.rearSetback+B, cz1=baseW/2-B;          // face da frente da traseira → face de trás da frontal
+    const cross=box(B,A,cz1-cz0,steelMat); cross.position.set(0,yRail,(cz0+cz1)/2*MM); dyn.add(cross);
+
     // Abas superiores de fixação: chapas soldadas na face interna das travessas, rentes ao topo da base,
     // com furo oblongo no sentido da largura do tampo (Z) para a madeira poder trabalhar.
     const fx=baseL/2-B;                                   // face interna dos quadros
@@ -473,8 +477,9 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
     railsZ.forEach(z=>{
       const dir = z>0 ? -1 : 1;                           // aba aponta para o centro da mesa
       const face = z + dir*B/2;
-      [-450,0,450].forEach(x=>dyn.add(tabMesh(x, face+dir*P.tabW/2, P.tabL, P.tabW)));
+      [-450,450].forEach(x=>dyn.add(tabMesh(x, face+dir*P.tabW/2, P.tabL, P.tabW)));
     });
+    [-1,1].forEach(sx=>dyn.add(tabMesh(sx*(B/2+P.tabW/2), (cz0+cz1)/2, P.tabW, P.tabL)));   // 2 abas na travessa central
 
     // Organizador de cabos
     if(P.tray){
@@ -567,6 +572,10 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
     const xd=(P.tray?P.trayL/2+90:300)*MM;
     if(P.railMode===2) dimLine(V(xd,yb-0.002,-W/2),V(xd,yb-0.002,(rearEdge+P.rearSetback)*MM),V(1,0,0),()=>'travessa '+nu(P.rearSetback));
     else dimLine(V(xd,yb-0.002,-W/2),V(xd,yb-0.002,-B/2*MM),V(1,0,0),()=>'travessa '+nu(P.topW/2-B/2));
+    // travessa central: comprimento e posição no eixo
+    { const c0=rearEdge+P.rearSetback+B, c1=baseW/2-B, xc=0.06;
+      dimLine(V(xc,yb-0.002,c0*MM),V(xc,yb-0.002,c1*MM),V(1,0,0),()=>'travessa central '+nu(c1-c0));
+      dimLine(V(-L/2,yb-0.002,(c0+c1)/2*MM),V(0,yb-0.002,(c0+c1)/2*MM),V(0,0,1),()=>'eixo '+nu(P.topL/2)); }
     if(P.tray){
       const zb=(rearEdge+P.trayGap)*MM, yBot=(P.baseH-P.trayH)*MM;
       dimLine(V(-P.trayL/2*MM,yBot-0.03,zb),V(P.trayL/2*MM,yBot-0.03,zb),V(0,1,0),()=>'organizador '+nu(P.trayL));
@@ -625,6 +634,7 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
       ['Acabamento da base', 'eletrostática preto fosco'],
       ['Altura total', n(P.baseH)+' + '+n(P.topT)+' = '+n(P.baseH+P.topT)],
       P.railMode===2 ? ['Travessas','frente '+n(P.inset)+' · trás '+n(P.rearSetback)] : ['Travessa','única, central'],
+      ['Travessa central', 'no eixo · '+n((P.topW/2-P.inset-B)-(-P.topW/2+P.rearSetback+B))+' × '+n(P.tubeA)+' × '+n(P.tubeB)],
       ['Organizador (C × P × A)', P.tray ? n(P.trayL)+' × '+n(P.trayD)+' × '+n(P.trayH) : 'não'],
     ];
     if(P.slots){
@@ -778,6 +788,7 @@ function buildSheet(unit){
   const BL=1300, BW=670, FX=BL/2-B;         // FX = face interna dos quadros (610)
   const legZ=BW/2-A;                        // 275: face interna dos pés no sentido Z
   const RF=BW/2-B, RB=-W/2+240;             // travessa frontal: z 295..335 · traseira: z -145..-105
+  const CZ0=RB+B, CZ1=RF, CL=CZ1-CZ0;        // travessa central (eixo x = 0): z -105..295, 400 mm
   const TR={x:500, z0:-325, z1:-175, y0:BH-110, lip:35};
   const SLX=[-500,0,500], SLZ=-W/2+135, SW=80, SH=40, SR=8;
   const tabsFrame=[], tabsRail=[];
@@ -856,6 +867,7 @@ function buildSheet(unit){
   // travessa frontal e pés
   rect(fx(-FX),fy(BH),2*FX*S,A*S,'steel');
   rect(fx(-BL/2),fy(BH),B*S,BH*S,'steel'); rect(fx(FX),fy(BH),B*S,BH*S,'steel');
+  rect(fx(-B/2),fy(BH),B*S,A*S,'hid');                                   // travessa central (oculta)
   // abas (ocultas sob o tampo, atrás da travessa)
   // tampo + passa-cabos ocultos
   rect(fx(-L/2),fy(H),L*S,T*S,'wood',5*S);
@@ -891,6 +903,7 @@ function buildSheet(unit){
   // ocultos: travessas longitudinais (seções) e calha atrás do pé traseiro
   rect(sx(BW/2),fy(BH),B*S,A*S,'hid');
   rect(sx(RB+B),fy(BH),B*S,A*S,'hid');
+  rect(sx(CZ1),fy(BH),CL*S,A*S,'hid');                                    // travessa central (oculta)
   path(`M${f(sx(-legZ))} ${f(fy(TR.y0))} L${f(sx(TR.z0))} ${f(fy(TR.y0))} L${f(sx(TR.z0))} ${f(fy(BH))}`,'hid');
   // tampo
   rect(sx(W/2),fy(H),W*S,T*S,'wood',5*S);
@@ -924,9 +937,11 @@ function buildSheet(unit){
     rect(px(x0),pz(-BW/2),B*S,A*S,'thin'); rect(px(x0),pz(BW/2-A),B*S,A*S,'thin');
   });
   // travessas
-  rect(px(-FX),pz(RF-B/2),2*FX*S,B*S,'steel');
+  rect(px(-FX),pz(RF),2*FX*S,B*S,'steel');
   rect(px(-FX),pz(RB),2*FX*S,B*S,'steel');
-  text(px(-300),pz(RF)+2.5,'TRAVESSA FRONTAL '+v(A)+' × '+v(B),'lts','middle');
+  rect(px(-B/2),pz(CZ0),B*S,CL*S,'steel');
+  text(px(0)+3,pz((CZ0+CZ1)/2),'TRAVESSA CENTRAL','lts','middle',-90);
+  text(px(-300),pz(RF+B/2)+2.5,'TRAVESSA FRONTAL '+v(A)+' × '+v(B),'lts','middle');
   text(px(-300),pz(RB+B/2)+2.5,'TRAVESSA TRASEIRA '+v(A)+' × '+v(B),'lts','middle');
   // calha perfurada
   rect(px(-TR.x),pz(TR.z0),2*TR.x*S,(TR.z1-TR.z0)*S,'tray');
@@ -942,6 +957,8 @@ function buildSheet(unit){
     line(px(x),pz(-W/2)-50,px(x),pz(SLZ)+20,'ax');
   });
   line(px(-TR.x-80),pz(SLZ),px(FX+20),pz(SLZ),'ax');
+  line(px(0),pz(-W/2)-50,px(0),pz(W/2)+10,'ax');
+  dimV(px(B/2),pz(CZ0),px(B/2),pz(CZ1),px(80),'travessa central '+v(CL));
   text(px(0),pz(TR.z0)+ (TR.z1-TR.z0)*S/2+20,'CALHA ORGANIZADORA PERFURADA · '+v(1000)+' × '+v(150)+' × '+v(110),'lts','middle');
   text(px(0),pz(W/2)-9,'FRENTE — LADO DO USUÁRIO','lts','middle');
   text(px(-260),pz(-W/2)+11,'FUNDO','lts','middle');
@@ -955,7 +972,7 @@ function buildSheet(unit){
   dimV(px(-TR.x),pz(TR.z0),px(-TR.x),pz(TR.z1),px(-L/2)-22,v(150));
   dimV(px(L/2-30),pz(-W/2),px(540),pz(SLZ),px(L/2)+20,v(135));
   dimV(px(L/2-30),pz(-W/2),px(FX+B),pz(RB),px(L/2)+40,v(240));
-  dimV(px(FX+B),pz(RF+B/2),px(L/2-30),pz(W/2),px(L/2)+40,v(IN));
+  dimV(px(FX+B),pz(RF+B),px(L/2-30),pz(W/2),px(L/2)+40,v(IN));
   dimH(px(-TR.x),pz(TR.z1),px(TR.x),pz(TR.z1),pz(-28),'calha '+v(1000),{dx:-60});
   dimH(px(SLX[2]+SW/2),null,px(FX),null,pz(SLZ),v(70));
   dimH(px(-L/2),pz(W/2-30),px(-BL/2),pz(BW/2),P1+18,v(IN));
@@ -1003,7 +1020,7 @@ function buildSheet(unit){
 
   // ================= FICHA TÉCNICA =================
   {
-    const x0=1040, y0=440, w=330, hh=24, rh=29.5;
+    const x0=1040, y0=440, w=330, hh=24, rh=28;
     rect(x0,y0,w,hh,'th'); text(x0+10,y0+16.5,'FICHA TÉCNICA DO PROJETO','tht');
     const rows=[
       ['TAMPO','Madeira maciça · '+v(L)+' × '+v(W)+' × '+v(T)],
@@ -1014,6 +1031,7 @@ function buildSheet(unit){
       ['ALTURAS','Base '+v(BH)+' · total '+v(H)],
       ['RECUO','Quadros a '+v(IN)+' das 4 bordas'],
       ['TRAVESSAS','Frente a '+v(IN)+' · trás a '+v(240)+' do fundo'],
+      ['TRAV. CENTRAL','No eixo · '+v(CL)+' entre travessas · '+v(A)+' × '+v(B)],
       ['ORGANIZADOR','Calha perfurada '+v(1000)+' × '+v(150)+' × '+v(110)],
       ['PASSA-CABOS','3× '+v(SW)+' × '+v(SH)+' · centros '+v(200)+' / '+v(700)+' / '+v(1200)],
       ['PINTURA','Eletrostática a pó, preto fosco'],
@@ -1039,7 +1057,7 @@ function buildSheet(unit){
       add(a,b,0,BH,legZ,BW/2,'S'); add(a,b,0,BH,-BW/2,-legZ,'S');
       add(a,b,BH-A,BH,-legZ,legZ,'S'); add(a,b,0,A,-legZ,legZ,'S');
     });
-    add(-FX,FX,BH-A,BH,RF-B/2,RF+B/2,'S'); add(-FX,FX,BH-A,BH,RB,RB+B,'S');
+    add(-FX,FX,BH-A,BH,RF,RF+B,'S'); add(-FX,FX,BH-A,BH,RB,RB+B,'S'); add(-B/2,B/2,BH-A,BH,CZ0,CZ1,'S');
     add(-TR.x,TR.x,TR.y0,BH,TR.z0,TR.z1,'S');
     steel.sort((a,b)=>((a.x0+a.x1)/2+(a.z0+a.z1)/2+(a.y0+a.y1)/4)-((b.x0+b.x1)/2+(b.z0+b.z1)/2+(b.y0+b.y1)/4));
     const all=[...steel,{x0:-L/2,x1:L/2,y0:BH,y1:H,z0:-W/2,z1:W/2,m:'W'}];
