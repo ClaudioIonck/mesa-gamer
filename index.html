@@ -46,8 +46,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow:hidde
 #stage{position:fixed;inset:0}
 #stage canvas{display:block;width:100%;height:100%;touch-action:none}
 
-.card{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));
-  width:min(310px,calc(100vw - 32px));max-height:calc(100% - 100px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto;
+.card{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));
+  width:min(310px,calc(100vw - 32px));max-height:calc(100% - 130px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));max-height:calc(100dvh - 130px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto;
   background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
 .head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
@@ -95,7 +95,7 @@ dd{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;fo
 .views button:hover{background:var(--btn)}
 .views button[aria-pressed="true"]{background:var(--btn-on);color:var(--btn-on-fg)}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));top:calc(14px + env(safe-area-inset-top,0px));
+.hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));top:calc(10px + env(safe-area-inset-top,0px));
   width:236px;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
 .hint-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -199,7 +199,6 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
 
     <div class="chip ok" id="chip"></div>
 
-    <label class="toggle"><input type="checkbox" id="dims" checked> Mostrar cotas no modelo</label>
   </div>
 </aside>
 
@@ -613,9 +612,8 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
     setDims(dimsOn);
   }
   function setDims(on){ dimsOn=on; dimGroup.visible=on; labels.forEach(l=>l.el.hidden=!on); }
-  const dimsBox=document.getElementById('dims'), dimsBtn=document.getElementById('dimsToggle');
-  function syncDims(on){ setDims(on); dimsBox.checked=on; dimsBtn.setAttribute('aria-pressed',on); }
-  dimsBox.addEventListener('change',e=>syncDims(e.target.checked));
+  const dimsBtn=document.getElementById('dimsToggle');
+  function syncDims(on){ setDims(on); dimsBtn.setAttribute('aria-pressed',on); }
   dimsBtn.addEventListener('click',()=>syncDims(!dimsOn));
 
   const pv=new THREE.Vector3();
