@@ -30,7 +30,15 @@ Para usar, abra o `index.html` no navegador. Não há build nem dependências lo
 - **Navegação:** girar 360°, zoom e mover a câmera com mouse ou toque (OrbitControls).
 - **Vistas rápidas:** Perspectiva, Traseira, Frontal, Lateral, Superior e Inferior (a câmera também pode girar por baixo da mesa).
 - **Cotas:** cotas desenhadas no modelo, com chave **mm / cm**.
+- **Prancha técnica 2D:** botão **SVG** no canto inferior direito alterna entre o modelo 3D e a prancha (vistas frontal, lateral, planta, isométrica, detalhes e ficha técnica), com zoom e cotas em mm / cm.
 - **Folgas:** o painel mostra a folga entre o organizador e a travessa traseira e a distância dos furos das pontas até o quadro da base.
+
+## Prancha técnica
+
+A prancha também está salva em [`prancha/`](prancha/), pronta para enviar ao marceneiro e à serralheria:
+
+- `mesa-gamer-prancha-tecnica.svg` · desenho vetorial (abre em programas de CAD ou de desenho)
+- `mesa-gamer-prancha-tecnica.png` · imagem A3 em alta resolução (~420 dpi), para imprimir ou mandar por mensagem
 
 ## Ajustes no código
 
