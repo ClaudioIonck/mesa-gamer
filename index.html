@@ -79,8 +79,21 @@ dd{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;fo
 .views button:hover{background:var(--btn)}
 .views button[aria-pressed="true"]{background:var(--btn-on);color:var(--btn-on-fg)}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));top:calc(16px + env(safe-area-inset-top,0px));
-  font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.6}
+.hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));top:calc(14px + env(safe-area-inset-top,0px));
+  width:236px;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.hint-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hint .collapse{width:28px;height:28px}
+.hint.min .hint-body{display:none}
+.hint.min .collapse svg{transform:rotate(180deg)}
+.hint-body{display:grid;margin-top:8px;border-top:1px solid var(--line)}
+.ctl{display:grid;grid-template-columns:20px 1fr auto;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.ctl:last-child{border-bottom:0;padding-bottom:0}
+.ctl svg{width:16px;height:22px;justify-self:center}
+.ctl .k{font-size:12.5px;color:var(--muted)}
+.ctl .v{font:600 12.5px var(--mono);color:var(--fg)}
+.mouse-o{fill:none;stroke:var(--fg);stroke-width:1.3}
+.mouse-on{fill:var(--accent)}
 .lbl{position:absolute;font-family:var(--mono);font-size:11.5px;color:var(--fg);background:var(--panel);border:1px solid var(--line);
   padding:2px 6px;border-radius:4px;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
 .lbl.slot{border-color:var(--accent);color:var(--accent)}
@@ -161,7 +174,19 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
   </div>
 </aside>
 
-<div class="hint">arrastar · girar<br>roda / pinça · zoom<br>botão direito · mover</div>
+<aside class="hint" id="hint" aria-label="Controles do mouse">
+  <div class="hint-head">
+    <div class="eyebrow">Controles</div>
+    <button class="collapse" id="hintCollapse" aria-expanded="true" aria-label="Recolher controles" title="Recolher controles">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10l4.5-4.5 4.5 4.5"/></svg>
+    </button>
+  </div>
+  <div class="hint-body">
+    <div class="ctl"><svg viewBox="0 0 16 22" aria-hidden="true"><path class="mouse-on" d="M8 1.2C4.6 1.2 1.7 3.6 1.7 7.4V9H8V1.2Z"/><rect class="mouse-o" x="1.7" y="1.2" width="12.6" height="19.6" rx="6.3"/><path class="mouse-o" d="M1.7 9H14.3M8 1.2V9"/></svg><span class="k">Mouse esquerdo</span><span class="v">Girar</span></div>
+    <div class="ctl"><svg viewBox="0 0 16 22" aria-hidden="true"><rect class="mouse-on" x="6.6" y="3.6" width="2.8" height="4.6" rx="1.4"/><rect class="mouse-o" x="1.7" y="1.2" width="12.6" height="19.6" rx="6.3"/><path class="mouse-o" d="M1.7 9H14.3M8 1.2V9"/></svg><span class="k">Scroll do mouse</span><span class="v">Zoom</span></div>
+    <div class="ctl"><svg viewBox="0 0 16 22" aria-hidden="true"><path class="mouse-on" d="M8 1.2c3.4 0 6.3 2.4 6.3 6.2V9H8V1.2Z"/><rect class="mouse-o" x="1.7" y="1.2" width="12.6" height="19.6" rx="6.3"/><path class="mouse-o" d="M1.7 9H14.3M8 1.2V9"/></svg><span class="k">Mouse direito</span><span class="v">Mover</span></div>
+  </div>
+</aside>
 
 <nav class="views" aria-label="Pontos de vista">
   <button data-view="persp" aria-pressed="true">Perspectiva</button>
@@ -639,6 +664,9 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
   const card=$('card'), col=$('collapse');
   function setMin(min){ card.classList.toggle('min',min); const t=min?'Expandir painel':'Recolher painel'; col.setAttribute('aria-label',t); col.title=t; col.setAttribute('aria-expanded',!min); }
   col.addEventListener('click',()=>setMin(!card.classList.contains('min')));
+  const hint=$('hint'), hcol=$('hintCollapse');
+  function setHintMin(min){ hint.classList.toggle('min',min); const t=min?'Expandir controles':'Recolher controles'; hcol.setAttribute('aria-label',t); hcol.title=t; hcol.setAttribute('aria-expanded',!min); }
+  hcol.addEventListener('click',()=>setHintMin(!hint.classList.contains('min')));
   if(window.innerWidth<560) setMin(true);
 
   // ---------- Loop ----------
