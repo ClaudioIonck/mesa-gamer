@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mesa Gamer 1400</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: palco 3D em tela cheia; ficha técnica + configuração flutuando no canto, barra de vistas na base */
+:root{
+  --bg:#e9e6e1; --panel:rgba(250,248,245,.9); --fg:#22201d; --muted:#6c665e;
+  --line:rgba(34,32,29,.14); --accent:#b0662a; --btn:#ffffff; --btn-on:#22201d; --btn-on-fg:#f6f2ec;
+  --ok:#2f7a4a; --ok-bg:rgba(47,122,74,.12); --bad:#b3362b; --bad-bg:rgba(179,54,43,.12);
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1c1b19; --panel:rgba(32,30,28,.88); --fg:#ece7df; --muted:#9a938a;
+  --line:rgba(236,231,223,.14); --accent:#d98a45; --btn:#2a2826; --btn-on:#ece7df; --btn-on-fg:#1c1b19;
+  --ok:#6cc48d; --ok-bg:rgba(108,196,141,.14); --bad:#ef7a6e; --bad-bg:rgba(239,122,110,.14); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1c1b19; --panel:rgba(32,30,28,.88); --fg:#ece7df; --muted:#9a938a;
+  --line:rgba(236,231,223,.14); --accent:#d98a45; --btn:#2a2826; --btn-on:#ece7df; --btn-on-fg:#1c1b19;
+  --ok:#6cc48d; --ok-bg:rgba(108,196,141,.14); --bad:#ef7a6e; --bad-bg:rgba(239,122,110,.14); color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow:hidden}
+#stage{position:fixed;inset:0}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none}
+
+.card{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));
+  width:min(310px,calc(100vw - 32px));max-height:calc(100% - 100px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto;
+  background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:600;font-size:26px;line-height:1;margin:4px 0 2px;letter-spacing:.01em;text-wrap:balance}
+h2{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.overall{font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:10px;font-variant-numeric:tabular-nums}
+dl{margin:0;display:grid;grid-template-columns:1fr auto;border-top:1px solid var(--line)}
+dt,dd{margin:0;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+dt{color:var(--muted);padding-right:8px}
+dd{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;font-size:12.5px}
+.mat{display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.sw{display:inline-flex;align-items:center;gap:6px}
+.sw i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid var(--line)}
+
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px;border:1px solid var(--line);border-radius:8px}
+.seg button{font:500 12.5px var(--body);color:var(--fg);background:transparent;border:0;border-radius:6px;padding:7px 6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--btn-on);color:var(--btn-on-fg)}
+.units{display:inline-grid;grid-template-columns:auto auto;gap:2px;padding:2px;border:1px solid var(--line);border-radius:7px;flex:none}
+.units button{font:500 12px var(--mono);color:var(--fg);background:transparent;border:0;border-radius:5px;padding:5px 9px;cursor:pointer}
+.units button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.field{margin-top:10px;display:grid;gap:4px}
+.field label{display:flex;justify-content:space-between;font-size:12.5px;gap:8px}
+.field output{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.field input[type=range]{width:100%;accent-color:var(--accent)}
+.field[aria-disabled="true"]{opacity:.4}
+.toggle{margin-top:8px;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--fg);cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--accent);width:15px;height:15px}
+.chip{margin-top:10px;font-size:12px;padding:6px 9px;border-radius:6px;line-height:1.45}
+.chip.ok{color:var(--ok);background:var(--ok-bg)}
+.chip.bad{color:var(--bad);background:var(--bad-bg)}
+.chip b{font-family:var(--mono);font-weight:500}
+.tools{display:flex;gap:6px;align-items:stretch;flex:none}
+.collapse{display:grid;place-items:center;width:32px;padding:0;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--fg);cursor:pointer}
+.collapse:hover{background:var(--btn)}
+.collapse svg{width:14px;height:14px;transition:transform .2s ease}
+.card.min .collapse svg{transform:rotate(180deg)}
+.card.min .body{display:none}
+@media (prefers-reduced-motion: reduce){.collapse svg{transition:none}}
+
+.views{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  display:flex;gap:4px;padding:4px;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:999px;max-width:calc(100vw - 32px);overflow-x:auto}
+.views button{font:500 13px var(--body);color:var(--fg);background:transparent;border:0;border-radius:999px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.views button:hover{background:var(--btn)}
+.views button[aria-pressed="true"]{background:var(--btn-on);color:var(--btn-on-fg)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));top:calc(16px + env(safe-area-inset-top,0px));
+  font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.6}
+.lbl{position:absolute;font-family:var(--mono);font-size:11.5px;color:var(--fg);background:var(--panel);border:1px solid var(--line);
+  padding:2px 6px;border-radius:4px;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
+.lbl.slot{border-color:var(--accent);color:var(--accent)}
+#labels{position:fixed;inset:0;pointer-events:none}
+#err{position:fixed;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted)}
+@media (max-width:560px){
+  .hint{display:none}
+  .views button{padding:8px 10px;font-size:12.5px}
+  h1{font-size:22px}
+}
+</style>
+<style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font-size:14px}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="labels"></div>
+<div id="err" hidden>Não foi possível iniciar o WebGL neste navegador.</div>
+
+<aside class="card" id="card">
+  <div class="head">
+    <div>
+      <div class="eyebrow" id="eyebrow">Ficha técnica · cotas em mm</div>
+      <h1>Mesa gamer</h1>
+    </div>
+    <div class="tools">
+      <div class="units" role="group" aria-label="Unidade das cotas">
+        <button id="uMM" aria-pressed="true">mm</button>
+        <button id="uCM" aria-pressed="false">cm</button>
+      </div>
+      <button class="collapse" id="collapse" aria-expanded="true" aria-label="Recolher painel" title="Recolher painel">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10l4.5-4.5 4.5 4.5"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="overall" id="overall">1400 × 770 × 750 mm</div>
+  <div class="body">
+    <dl id="spec"></dl>
+
+    <h2>Travessas sob o tampo</h2>
+    <div class="seg" role="group" aria-label="Travessas">
+      <button id="mode2" aria-pressed="true">Frente + trás</button>
+      <button id="mode1" aria-pressed="false">Uma central</button>
+    </div>
+    <div class="field" id="rearField">
+      <label for="rear">Recuo da travessa traseira <output id="rearOut"></output></label>
+      <input type="range" id="rear" min="50" max="400" step="10" value="250">
+    </div>
+
+    <h2>Organizador e passa-cabos</h2>
+    <label class="toggle"><input type="checkbox" id="tray" checked> Organizador de cabos no fundo</label>
+    <div class="field" id="trayField">
+      <label for="trayLen">Comprimento do organizador <output id="trayLenOut"></output></label>
+      <input type="range" id="trayLen" min="600" max="1200" step="50" value="1000">
+    </div>
+    <label class="toggle"><input type="checkbox" id="slots" checked> 3 passa-cabos no tampo</label>
+    <div class="chip ok" id="chip"></div>
+
+    <div class="mat">
+      <span class="sw"><i style="background:#6b4128"></i>Madeira maciça, verniz brilho</span>
+      <span class="sw"><i style="background:#2b2e2f"></i>Aço grafite escuro #2B2E2F</span>
+    </div>
+    <label class="toggle"><input type="checkbox" id="dims" checked> Mostrar cotas no modelo</label>
+  </div>
+</aside>
+
+<div class="hint">arrastar · girar<br>roda / pinça · zoom<br>botão direito · mover</div>
+
+<nav class="views" aria-label="Pontos de vista">
+  <button data-view="persp" aria-pressed="true">Perspectiva</button>
+  <button data-view="rear" aria-pressed="false">Traseira</button>
+  <button data-view="front" aria-pressed="false">Frontal</button>
+  <button data-view="side" aria-pressed="false">Lateral</button>
+  <button data-view="top" aria-pressed="false">Superior</button>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+  // ---------- Parâmetros (sempre em mm) ----------
+  // Eixos: X = comprimento, Y = altura, Z = largura (+Z = frente, onde a pessoa senta; −Z = fundo)
+  const P = {
+    topL:1400, topW:770, topT:35,
+    inset:50, baseH:715,
+    tubeA:50, tubeB:30,                 // perfil retangular 50 x 30
+    railMode:2,                         // 2 = frente + trás · 1 = uma central
+    rearSetback:250,                    // borda traseira do tampo → face de trás da travessa traseira
+    tray:true,
+    trayL:1000, trayD:150, trayH:110, trayLip:35, trayGap:60,   // organizador
+    slots:true, slotW:80, slotH:40, slotR:8,                    // passa-cabos: 80 (ao longo do comprimento) × 40, cantos r8
+    edgeR:5,                            // boleado das arestas do tampo e dos furos (raio)
+    cornerR:25                          // raio dos 4 cantos do tampo, vistos de cima
+  };
+  const MM = 0.001;
+  const baseL=P.topL-2*P.inset, baseW=P.topW-2*P.inset, A=P.tubeA, B=P.tubeB;
+  const rearEdge=-P.topW/2;
+  // centro dos passa-cabos, medido da borda traseira: sobre o meio da profundidade do organizador
+  const slotZ = () => P.trayGap + P.trayD/2;
+  const slotXs = () => [-P.trayL/2, 0, P.trayL/2];
+
+  // ---------- Unidades ----------
+  let unit='mm';
+  try{ const u=localStorage.getItem('mesa-unit'); if(u==='cm'||u==='mm') unit=u; }catch(e){}
+  const nf = new Intl.NumberFormat('pt-BR',{maximumFractionDigits:1});
+  const n = mm => unit==='mm' ? String(Math.round(mm)) : nf.format(Math.round(mm)/10);
+  const nu = mm => n(mm)+' '+unit;
+
+  const stage=document.getElementById('stage');
+  let renderer;
+  try{ renderer=new THREE.WebGLRenderer({antialias:true}); }
+  catch(e){ document.getElementById('err').hidden=false; return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.05;
+  stage.appendChild(renderer.domElement);
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(35,1,0.01,50);
+  const controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true; controls.dampingFactor=0.08;
+  controls.minDistance=0.4; controls.maxDistance=8;
+  controls.maxPolarAngle=Math.PI*0.495;
+
+  // ---------- Tema ----------
+  function cssVar(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+  let floorMat, gridMat;
+  function applyTheme(){
+    const bg=new THREE.Color(cssVar('--bg')||'#e9e6e1');
+    scene.background=bg; scene.fog=new THREE.Fog(bg,5,14);
+    const dark=bg.getHSL({}).l<0.4;
+    if(floorMat) floorMat.opacity=dark?0.55:0.28;
+    if(gridMat) gridMat.color.set(dark?0x3a3733:0xc4bfb7);
+  }
+
+  // ---------- Madeira procedural ----------
+  function rand(seed){ let s=seed; return ()=>{ s=(s*16807)%2147483647; return (s-1)/2147483646; }; }
+  function makeWood(){
+    const w=2048,h=1024,c=document.createElement('canvas'); c.width=w;c.height=h;
+    const g=c.getContext('2d'), r=rand(42);
+    const grd=g.createLinearGradient(0,0,0,h);
+    grd.addColorStop(0,'#6b4128'); grd.addColorStop(.5,'#774930'); grd.addColorStop(1,'#5f3a22');
+    g.fillStyle=grd; g.fillRect(0,0,w,h);
+    const planks=6, ph=h/planks;
+    for(let i=0;i<planks;i++){
+      const tint=(r()-0.5)*26;
+      g.fillStyle=`rgba(${tint>0?255:60},${tint>0?220:35},${tint>0?170:10},${Math.abs(tint)/260})`;
+      g.fillRect(0,i*ph,w,ph);
+    }
+    for(let i=0;i<520;i++){
+      const y0=r()*h, amp=2+r()*9, freq=0.0015+r()*0.004, ph0=r()*6.28, dark=r()<0.65;
+      g.strokeStyle=dark?`rgba(38,18,6,${0.06+r()*0.18})`:`rgba(196,140,92,${0.04+r()*0.10})`;
+      g.lineWidth=0.6+r()*2.4; g.beginPath();
+      for(let x=0;x<=w;x+=16){ const y=y0+Math.sin(x*freq+ph0)*amp+Math.sin(x*freq*3.1+ph0)*amp*0.3; x?g.lineTo(x,y):g.moveTo(x,y); }
+      g.stroke();
+    }
+    for(let k=0;k<4;k++){
+      const cx=r()*w, cy=r()*h;
+      for(let j=10;j>0;j--){ g.strokeStyle=`rgba(40,20,6,${0.06+0.03*j/10})`; g.lineWidth=1.2; g.beginPath(); g.ellipse(cx,cy,j*7,j*2.6,0,0,Math.PI*2); g.stroke(); }
+    }
+    for(let i=1;i<planks;i++){ g.fillStyle='rgba(28,14,4,.16)'; g.fillRect(0,i*ph-1,w,2); }
+    const img=g.getImageData(0,0,w,h), d=img.data;
+    for(let i=0;i<d.length;i+=4){ const q=(r()-0.5)*14; d[i]+=q; d[i+1]+=q; d[i+2]+=q; }
+    g.putImageData(img,0,0);
+    return c;
+  }
+  const woodCanvas=makeWood();
+  const aniso=renderer.capabilities.getMaxAnisotropy();
+  // Faces do tampo: UV em metros (−0,70…0,70 × −0,385…0,385) → remapeado para 0…1
+  const capMap=new THREE.CanvasTexture(woodCanvas); capMap.encoding=THREE.sRGBEncoding; capMap.anisotropy=aniso;
+  const capBump=new THREE.CanvasTexture(woodCanvas);
+  [capMap,capBump].forEach(t=>{ t.repeat.set(1/(P.topL*MM),1/(P.topW*MM)); t.offset.set(0.5,0.5); });
+  // Acabamento liso com verniz de alto brilho: base pouco rugosa + camada de verniz (clearcoat)
+  const woodCapMat=new THREE.MeshPhysicalMaterial({map:capMap,bumpMap:capBump,bumpScale:0.00008,roughness:0.38,metalness:0,clearcoat:1,clearcoatRoughness:0.07,envMapIntensity:1.1});
+  // Bordas e paredes dos furos (topo da madeira, tom mais escuro)
+  const edgeMap=new THREE.CanvasTexture(woodCanvas); edgeMap.encoding=THREE.sRGBEncoding;
+  edgeMap.wrapS=edgeMap.wrapT=THREE.RepeatWrapping; edgeMap.repeat.set(0.7,4);
+  const woodEdgeMat=new THREE.MeshPhysicalMaterial({map:edgeMap,color:0xc9b49c,roughness:0.42,clearcoat:1,clearcoatRoughness:0.1,envMapIntensity:1.1});
+  // Grafite escuro (referência de pintura #575B59). O albedo fica mais escuro que a referência
+  // porque a luz do sol e o tone mapping clareiam a peça; assim a cor vista na tela bate com a amostra.
+  const steelMat=new THREE.MeshStandardMaterial({color:0x17191a,roughness:0.55,metalness:0.3});
+
+  // ---------- Chapa perfurada ----------
+  function perfTexture(wMM,hMM,opts){
+    const s=2,c=document.createElement('canvas');
+    c.width=Math.max(4,Math.round(wMM*s)); c.height=Math.max(4,Math.round(hMM*s));
+    const g=c.getContext('2d');
+    g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.fillStyle='#000';
+    const m=opts.margin, sw=20, sh=6, px=32, py=15;
+    const cols=Math.floor((wMM-2*m-sw)/px)+1, rows=Math.floor((hMM-2*m-sh)/py)+1;
+    if(cols>0&&rows>0){
+      const ox=(wMM-((cols-1)*px+sw))/2, oy=(hMM-((rows-1)*py+sh))/2;
+      for(let i=0;i<cols;i++) for(let j=0;j<rows;j++){
+        const x=(ox+i*px)*s, y=(oy+j*py)*s;
+        g.beginPath(); g.roundRect?g.roundRect(x,y,sw*s,sh*s,sh*s/2):g.rect(x,y,sw*s,sh*s); g.fill();
+      }
+    }
+    (opts.cutouts||[]).forEach(([cx,cy,cw,ch])=>g.fillRect((cx-cw/2)*s,(cy-ch/2)*s,cw*s,ch*s));
+    const t=new THREE.CanvasTexture(c); t.anisotropy=aniso; return t;
+  }
+  function perfPanel(wMM,hMM,opts){
+    const alpha=perfTexture(wMM,hMM,opts);
+    const mat=new THREE.MeshStandardMaterial({color:0x17191a,roughness:0.58,metalness:0.3,alphaMap:alpha,alphaTest:0.5,side:THREE.DoubleSide});
+    const mesh=new THREE.Mesh(new THREE.PlaneGeometry(wMM*MM,hMM*MM),mat);
+    mesh.castShadow=true; mesh.receiveShadow=true;
+    mesh.customDepthMaterial=new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking,alphaMap:alpha,alphaTest:0.5});
+    return mesh;
+  }
+
+  // ---------- Ambiente ----------
+  const pmrem=new THREE.PMREMGenerator(renderer);
+  const envScene=new THREE.Scene(); envScene.background=new THREE.Color(0x888888);
+  const panelGeo=new THREE.PlaneGeometry(4,2);
+  const pA=new THREE.Mesh(panelGeo,new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide})); pA.position.set(0,3,0); pA.rotation.x=-Math.PI/2; envScene.add(pA);
+  const pB=pA.clone(); pB.position.set(3,1.5,0); pB.rotation.set(0,-Math.PI/2,0); envScene.add(pB);
+  scene.environment=pmrem.fromScene(envScene,0.04).texture;
+
+  function box(sx,sy,sz,mat){
+    const m=new THREE.Mesh(new THREE.BoxGeometry(sx*MM,sy*MM,sz*MM),mat);
+    m.castShadow=true; m.receiveShadow=true; return m;
+  }
+
+  // ---------- Tampo com passa-cabos ----------
+  // Contorno do tampo no plano; furos = retângulos 80 × 40 com cantos arredondados
+  function roundedRectPath(p,cx,cy,w,h,r){
+    const x0=cx-w/2,x1=cx+w/2,y0=cy-h/2,y1=cy+h/2;
+    p.moveTo(x0+r,y0); p.lineTo(x1-r,y0); p.absarc(x1-r,y0+r,r,-Math.PI/2,0,false);
+    p.lineTo(x1,y1-r); p.absarc(x1-r,y1-r,r,0,Math.PI/2,false);
+    p.lineTo(x0+r,y1); p.absarc(x0+r,y1-r,r,Math.PI/2,Math.PI,false);
+    p.lineTo(x0,y0+r); p.absarc(x0+r,y0+r,r,Math.PI,Math.PI*1.5,false);
+    return p;
+  }
+  function buildTop(){
+    const hw=P.topL/2*MM, hd=P.topW/2*MM;
+    const shape=new THREE.Shape();
+    roundedRectPath(shape,0,0,P.topL*MM,P.topW*MM,P.cornerR*MM);   // cantos arredondados
+    if(P.slots){
+      // y da forma = −Z do mundo (a forma é girada −90° em X)
+      const cy=-(rearEdge+slotZ())*MM;
+      slotXs().forEach(x=>shape.holes.push(roundedRectPath(new THREE.Path(),x*MM,cy,P.slotW*MM,P.slotH*MM,P.slotR*MM)));
+    }
+    // Boleado: o bevel arredonda as arestas de cima e de baixo (e dos furos) sem mudar as medidas externas
+    const e=P.edgeR*MM;
+    const geo=new THREE.ExtrudeGeometry(shape,{depth:(P.topT-2*P.edgeR)*MM,bevelEnabled:true,bevelThickness:e,bevelSize:e,bevelOffset:-e,bevelSegments:6,curveSegments:14});
+    geo.translate(0,0,e);
+    geo.rotateX(-Math.PI/2);
+    const mesh=new THREE.Mesh(geo,[woodCapMat,woodEdgeMat]);
+    mesh.position.y=P.baseH*MM; mesh.castShadow=true; mesh.receiveShadow=true;
+    return mesh;
+  }
+
+  // ---------- Base, organizador e tampo (reconstruídos ao mudar opções) ----------
+  let dyn=null;
+  function disposeGroup(g){
+    g.traverse(o=>{
+      if(o.geometry) o.geometry.dispose();
+      if(o.material){ [].concat(o.material).forEach(m=>{ if(m===steelMat||m===woodCapMat||m===woodEdgeMat) return; if(m.alphaMap) m.alphaMap.dispose(); m.dispose(); }); }
+      if(o.customDepthMaterial) o.customDepthMaterial.dispose();
+    });
+  }
+  function build(){
+    if(dyn){ scene.remove(dyn); disposeGroup(dyn); }
+    dyn=new THREE.Group(); scene.add(dyn);
+    dyn.add(buildTop());
+
+    // Quadros das cabeceiras
+    [-1,1].forEach(sx=>{
+      const fx=sx*(baseL/2-B/2);
+      [-1,1].forEach(sz=>{ const leg=box(B,P.baseH,A,steelMat); leg.position.set(fx*MM,(P.baseH/2)*MM,sz*(baseW/2-A/2)*MM); dyn.add(leg); });
+      [A/2,P.baseH-A/2].forEach(y=>{ const rail=box(B,A,baseW-2*A,steelMat); rail.position.set(fx*MM,y*MM,0); dyn.add(rail); });
+    });
+
+    // Travessas longitudinais
+    const longLen=baseL-2*B, yRail=(P.baseH-A/2)*MM;
+    const railsZ = P.railMode===2 ? [baseW/2-B/2, rearEdge+P.rearSetback+B/2] : [0];
+    railsZ.forEach(z=>{ const lg=box(longLen,A,B,steelMat); lg.position.set(0,yRail,z*MM); dyn.add(lg); });
+
+    // Organizador de cabos
+    if(P.tray){
+      const L=P.trayL, D=P.trayD, H=P.trayH, lip=P.trayLip;
+      const zBack=rearEdge+P.trayGap, zFront=zBack+D, yTop=P.baseH, yBot=P.baseH-H;
+      const tray=new THREE.Group(); dyn.add(tray);
+      const wall=perfPanel(L,H,{margin:10}); wall.position.set(0,(yTop+yBot)/2*MM,zBack*MM); tray.add(wall);
+      const bottom=perfPanel(L,D,{margin:12,cutouts:[[L*0.22,D/2,90,55],[L*0.78,D/2,90,55]]});
+      bottom.rotation.x=-Math.PI/2; bottom.position.set(0,yBot*MM,(zBack+D/2)*MM); tray.add(bottom);
+      const front=perfPanel(L,lip,{margin:6}); front.position.set(0,(yBot+lip/2)*MM,zFront*MM); tray.add(front);
+      // abas de fixação (ficam atrás dos passa-cabos para não cobri-los)
+      [-1,1].forEach(s=>{
+        const tab=box(70,3,45,steelMat); tab.position.set(s*(L/2-35)*MM,(yTop-1.5)*MM,(zBack+22.5)*MM); tray.add(tab);
+        const fold=box(70,20,3,steelMat); fold.position.set(s*(L/2-35)*MM,(yTop-10)*MM,(zBack+1.5)*MM); tray.add(fold);
+      });
+    }
+    buildDims();
+    updatePanel();
+  }
+
+  // ---------- Piso e luzes ----------
+  floorMat=new THREE.ShadowMaterial({opacity:0.28});
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),floorMat);
+  floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+  const grid=new THREE.GridHelper(10,100,0x000000,0x000000);
+  gridMat=grid.material; gridMat.transparent=true; gridMat.opacity=0.35; grid.position.y=0.0005; scene.add(grid);
+
+  scene.add(new THREE.HemisphereLight(0xfff4e6,0x8a7f72,0.5));
+  scene.add(new THREE.AmbientLight(0xffffff,0.18));
+  const sun=new THREE.DirectionalLight(0xfff1e0,2.2);
+  sun.position.set(2.2,3.6,1.8); sun.castShadow=true;
+  sun.shadow.mapSize.set(2048,2048); sun.shadow.radius=6; sun.shadow.bias=-0.0004; sun.shadow.normalBias=0.02;
+  Object.assign(sun.shadow.camera,{left:-1.6,right:1.6,top:1.6,bottom:-1.6,near:0.5,far:10});
+  scene.add(sun);
+  const fill=new THREE.DirectionalLight(0xdfe8ff,0.6); fill.position.set(-2.5,1.5,-2.5); scene.add(fill);
+
+  applyTheme();
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
+  new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+  // ---------- Cotas 3D ----------
+  const dimGroup=new THREE.Group(); scene.add(dimGroup);
+  const dimMat=new THREE.LineBasicMaterial({color:0xb0662a});
+  const extMat=new THREE.LineBasicMaterial({color:0xb0662a,transparent:true,opacity:0.5});
+  const labelsEl=document.getElementById('labels');
+  let labels=[], dimsOn=true;
+  const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+  function tag(pos,textFn,cls){
+    const el=document.createElement('div'); el.className='lbl'+(cls?' '+cls:''); labelsEl.appendChild(el);
+    const l={el,pos,textFn}; l.el.textContent=textFn(); labels.push(l);
+  }
+  function dimLine(a,b,tick,textFn,cls){
+    const tk=tick.clone().multiplyScalar(0.022);
+    dimGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([a,b,a.clone().add(tk),a.clone().sub(tk),b.clone().add(tk),b.clone().sub(tk)]),dimMat));
+    tag(a.clone().add(b).multiplyScalar(0.5),textFn,cls);
+  }
+  function extLines(pts){ dimGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts),extMat)); }
+  function relabel(){ labels.forEach(l=>l.el.textContent=l.textFn()); }
+
+  function buildDims(){
+    dimGroup.children.slice().forEach(c=>{ c.geometry.dispose(); dimGroup.remove(c); });
+    labels.forEach(l=>l.el.remove()); labels=[];
+    const L=P.topL*MM, W=P.topW*MM, H=(P.baseH+P.topT)*MM, yb=P.baseH*MM, off=0.09;
+    dimLine(V(-L/2,H,W/2+off),V(L/2,H,W/2+off),V(0,0,1),()=>nu(P.topL));
+    dimLine(V(L/2+off,H,-W/2),V(L/2+off,H,W/2),V(1,0,0),()=>nu(P.topW));
+    dimLine(V(L/2+off,0,W/2+off),V(L/2+off,H,W/2+off),V(1,0,0),()=>nu(P.baseH+P.topT));
+    dimLine(V(-L/2-off,0,W/2),V(-L/2-off,yb,W/2),V(1,0,0),()=>nu(P.baseH));
+    extLines([V(-L/2,H,W/2),V(-L/2,H,W/2+off+0.02), V(L/2,H,W/2),V(L/2,H,W/2+off+0.02), V(L/2,H,-W/2),V(L/2+off+0.02,H,-W/2)]);
+    dimLine(V(-0.25,yb-0.002,(P.topW/2-P.inset)*MM),V(-0.25,yb-0.002,W/2),V(1,0,0),()=>nu(P.inset));
+    const xd=(P.tray?P.trayL/2+90:300)*MM;
+    if(P.railMode===2) dimLine(V(xd,yb-0.002,-W/2),V(xd,yb-0.002,(rearEdge+P.rearSetback)*MM),V(1,0,0),()=>'travessa '+nu(P.rearSetback));
+    else dimLine(V(xd,yb-0.002,-W/2),V(xd,yb-0.002,-B/2*MM),V(1,0,0),()=>'travessa '+nu(P.topW/2-B/2));
+    if(P.tray){
+      const zb=(rearEdge+P.trayGap)*MM, yBot=(P.baseH-P.trayH)*MM;
+      dimLine(V(-P.trayL/2*MM,yBot-0.03,zb),V(P.trayL/2*MM,yBot-0.03,zb),V(0,1,0),()=>'organizador '+nu(P.trayL));
+      extLines([V(-P.trayL/2*MM,yBot,zb),V(-P.trayL/2*MM,yBot-0.045,zb),V(P.trayL/2*MM,yBot,zb),V(P.trayL/2*MM,yBot-0.045,zb)]);
+    }
+    if(P.slots){
+      const zc=(rearEdge+slotZ())*MM, ys=H+0.001, zr=-W/2-0.07;
+      const xs=slotXs().map(x=>x*MM);
+      // espaçamento entre centros, ao longo da borda traseira
+      dimLine(V(xs[0],ys,zr),V(xs[1],ys,zr),V(0,0,1),()=>nu(P.trayL/2),'slot');
+      dimLine(V(xs[1],ys,zr),V(xs[2],ys,zr),V(0,0,1),()=>nu(P.trayL/2),'slot');
+      extLines(xs.flatMap(x=>[V(x,ys,zc),V(x,ys,zr-0.02)]));
+      // distância da borda traseira ao centro dos furos
+      const xq=xs[2]+0.11;
+      dimLine(V(xq,ys,-W/2),V(xq,ys,zc),V(1,0,0),()=>nu(slotZ()),'slot');
+      extLines([V(xs[2]+P.slotW/2*MM,ys,zc),V(xq+0.02,ys,zc)]);
+      // tamanho do furo
+      tag(V(xs[1],ys+0.04,zc),()=>'3× '+n(P.slotW)+' × '+n(P.slotH)+' '+unit,'slot');
+    }
+    setDims(dimsOn);
+  }
+  function setDims(on){ dimsOn=on; dimGroup.visible=on; labels.forEach(l=>l.el.hidden=!on); }
+  document.getElementById('dims').addEventListener('change',e=>setDims(e.target.checked));
+
+  const pv=new THREE.Vector3();
+  function updateLabels(w,h){
+    if(!dimsOn) return;
+    labels.forEach(l=>{
+      pv.copy(l.pos).project(camera);
+      l.el.style.display=(pv.z<1&&pv.z>-1)?'':'none';
+      l.el.style.left=((pv.x+1)/2*w)+'px';
+      l.el.style.top=((1-pv.y)/2*h)+'px';
+    });
+  }
+
+  // ---------- Painel ----------
+  const $=id=>document.getElementById(id);
+  function updatePanel(){
+    $('uMM').setAttribute('aria-pressed',unit==='mm');
+    $('uCM').setAttribute('aria-pressed',unit==='cm');
+    $('eyebrow').textContent='Ficha técnica · cotas em '+unit;
+    $('overall').textContent=n(P.topL)+' × '+n(P.topW)+' × '+n(P.baseH+P.topT)+' '+unit;
+
+    const rows=[
+      ['Tampo (C × L)', n(P.topL)+' × '+n(P.topW)],
+      ['Espessura do tampo', n(P.topT)],
+      ['Boleado das arestas (raio)', n(P.edgeR)],
+      ['Cantos do tampo (raio)', n(P.cornerR)],
+      ['Recuo dos quadros', n(P.inset)],
+      ['Vão da base (C × L)', n(baseL)+' × '+n(baseW)],
+      ['Altura da base', n(P.baseH)],
+      ['Perfil metalon', n(P.tubeA)+' × '+n(P.tubeB)],
+      ['Altura total', n(P.baseH)+' + '+n(P.topT)+' = '+n(P.baseH+P.topT)],
+      P.railMode===2 ? ['Travessas','frente '+n(P.inset)+' · trás '+n(P.rearSetback)] : ['Travessa','única, central'],
+      ['Organizador (C × P × A)', P.tray ? n(P.trayL)+' × '+n(P.trayD)+' × '+n(P.trayH) : 'não'],
+    ];
+    if(P.slots){
+      rows.push(['Passa-cabos (3×)', n(P.slotW)+' × '+n(P.slotH)]);
+      rows.push(['Centros dos furos', n(-P.trayL/2+P.topL/2)+' · '+n(P.topL/2)+' · '+n(P.trayL/2+P.topL/2)]);
+      rows.push(['Do fundo ao centro', n(slotZ())]);
+    }
+    $('spec').innerHTML=rows.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');
+
+    $('mode2').setAttribute('aria-pressed',P.railMode===2);
+    $('mode1').setAttribute('aria-pressed',P.railMode===1);
+    $('rearField').setAttribute('aria-disabled',P.railMode!==2);
+    $('rear').disabled=P.railMode!==2;
+    $('rearOut').textContent=nu(P.rearSetback);
+    $('trayLenOut').textContent=nu(P.trayL);
+
+    // Verificações
+    const msgs=[]; let bad=false;
+    if(P.tray){
+      const trayFront=P.trayGap+P.trayD;
+      const railBack=P.railMode===2?P.rearSetback:P.topW/2-B/2;
+      const gap=railBack-trayFront;
+      if(gap<0){ bad=true; msgs.push('Organizador encosta na travessa: faltam <b>'+nu(-gap)+'</b>. Recue a travessa para <b>'+nu(trayFront)+'</b> ou mais.'); }
+      else if(gap<20){ bad=true; msgs.push('Folga apertada: <b>'+nu(gap)+'</b> entre organizador e travessa (ideal ≥ '+nu(20)+').'); }
+      else msgs.push('Folga organizador ↔ travessa: <b>'+nu(gap)+'</b>');
+    }
+    if(P.slots){
+      const outer=P.trayL/2+P.slotW/2, frameInner=baseL/2-B;
+      if(outer>frameInner){ bad=true; msgs.push('Os furos das pontas caem em cima do quadro da base. Use organizador de até <b>'+nu(2*(frameInner-P.slotW/2))+'</b>.'); }
+      else msgs.push('Furos das pontas a <b>'+nu(frameInner-outer)+'</b> do quadro');
+    }
+    const chip=$('chip');
+    chip.hidden=!msgs.length;
+    chip.className='chip '+(bad?'bad':'ok');
+    chip.innerHTML=msgs.join('<br>');
+  }
+  function setUnit(u){ unit=u; try{ localStorage.setItem('mesa-unit',u); }catch(e){} updatePanel(); relabel(); }
+  $('uMM').addEventListener('click',()=>setUnit('mm'));
+  $('uCM').addEventListener('click',()=>setUnit('cm'));
+  $('mode2').addEventListener('click',()=>{ P.railMode=2; build(); });
+  $('mode1').addEventListener('click',()=>{ P.railMode=1; build(); });
+  $('rear').addEventListener('input',e=>{ P.rearSetback=+e.target.value; build(); });
+  $('tray').addEventListener('change',e=>{ P.tray=e.target.checked; $('trayField').setAttribute('aria-disabled',!P.tray); $('trayLen').disabled=!P.tray; build(); });
+  $('trayLen').addEventListener('input',e=>{ P.trayL=+e.target.value; build(); });
+  $('slots').addEventListener('change',e=>{ P.slots=e.target.checked; build(); });
+
+  // ---------- Vistas ----------
+  const VIEWS={
+    persp:{pos:[2.15,1.45,2.35], tgt:[0,0.38,0]},
+    rear: {pos:[1.25,0.42,-2.2], tgt:[0,0.6,-0.1]},
+    front:{pos:[0,0.42,3.4],     tgt:[0,0.38,0]},
+    side: {pos:[3.2,0.42,0],     tgt:[0,0.38,0]},
+    top:  {pos:[0,3.6,0.0001],   tgt:[0,0.38,0]}
+  };
+  let anim=null;
+  function goTo(name,instant){
+    const vw=VIEWS[name], toP=V(...vw.pos), toT=V(...vw.tgt);
+    controls.maxPolarAngle=name==='top'?Math.PI:Math.PI*0.495;
+    if(instant||matchMedia('(prefers-reduced-motion: reduce)').matches){ camera.position.copy(toP); controls.target.copy(toT); controls.update(); return; }
+    anim={t0:performance.now(),dur:900,fromP:camera.position.clone(),fromT:controls.target.clone(),toP,toT};
+  }
+  document.querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.views button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    goTo(b.dataset.view);
+  }));
+  controls.addEventListener('start',()=>{ anim=null; });
+
+  const card=$('card'), col=$('collapse');
+  function setMin(min){ card.classList.toggle('min',min); const t=min?'Expandir painel':'Recolher painel'; col.setAttribute('aria-label',t); col.title=t; col.setAttribute('aria-expanded',!min); }
+  col.addEventListener('click',()=>setMin(!card.classList.contains('min')));
+  if(window.innerWidth<560) setMin(true);
+
+  // ---------- Loop ----------
+  function resize(){
+    const w=stage.clientWidth,h=stage.clientHeight;
+    renderer.setSize(w,h,false); camera.aspect=w/h; camera.fov=w/h<0.8?52:35; camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize',resize);
+  resize(); build(); goTo('persp',true);
+
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  function tick(now){
+    if(anim){
+      const k=Math.min(1,(now-anim.t0)/anim.dur), e=ease(k);
+      camera.position.lerpVectors(anim.fromP,anim.toP,e);
+      controls.target.lerpVectors(anim.fromT,anim.toT,e);
+      if(k>=1) anim=null;
+    }
+    controls.update(); renderer.render(scene,camera);
+    updateLabels(stage.clientWidth,stage.clientHeight);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
