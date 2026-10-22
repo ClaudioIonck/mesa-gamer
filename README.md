@@ -29,9 +29,7 @@ Para usar, abra o `index.html` no navegador. Não há build nem dependências lo
 - **Navegação:** girar 360°, zoom e mover a câmera com mouse ou toque (OrbitControls).
 - **Vistas rápidas:** Perspectiva, Traseira, Frontal, Lateral e Superior.
 - **Cotas:** cotas desenhadas no modelo, com chave **mm / cm**.
-- **Travessas:** compare "frente + trás" com "uma central".
-- **Organizador e passa-cabos:** podem ser mostrados ou ocultados no modelo.
-- **Avisos:** o modelo avisa quando há conflito entre o organizador e a travessa, ou entre os furos e o quadro da base.
+- **Folgas:** o painel mostra a folga entre o organizador e a travessa traseira e a distância dos furos das pontas até o quadro da base.
 
 ## Ajustes no código
 

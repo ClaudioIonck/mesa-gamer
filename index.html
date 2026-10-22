@@ -119,21 +119,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   <div class="body">
     <dl id="spec"></dl>
 
-    <h2>Travessas sob o tampo</h2>
-    <div class="seg" role="group" aria-label="Travessas">
-      <button id="mode2" aria-pressed="true">Frente + trás</button>
-      <button id="mode1" aria-pressed="false">Uma central</button>
-    </div>
 
-    <h2>Organizador e passa-cabos</h2>
-    <label class="toggle"><input type="checkbox" id="tray" checked> Organizador de cabos no fundo</label>
-    <label class="toggle"><input type="checkbox" id="slots" checked> 3 passa-cabos no tampo</label>
     <div class="chip ok" id="chip"></div>
 
-    <div class="mat">
-      <span class="sw"><i style="background:#6b4128"></i>Madeira maciça, verniz brilho</span>
-      <span class="sw"><i style="background:#2b2e2f"></i>Aço grafite escuro #2B2E2F</span>
-    </div>
     <label class="toggle"><input type="checkbox" id="dims" checked> Mostrar cotas no modelo</label>
   </div>
 </aside>
@@ -486,8 +474,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     }
     $('spec').innerHTML=rows.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');
 
-    $('mode2').setAttribute('aria-pressed',P.railMode===2);
-    $('mode1').setAttribute('aria-pressed',P.railMode===1);
 
     // Verificações
     const msgs=[]; let bad=false;
@@ -512,10 +498,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   function setUnit(u){ unit=u; try{ localStorage.setItem('mesa-unit',u); }catch(e){} updatePanel(); relabel(); }
   $('uMM').addEventListener('click',()=>setUnit('mm'));
   $('uCM').addEventListener('click',()=>setUnit('cm'));
-  $('mode2').addEventListener('click',()=>{ P.railMode=2; build(); });
-  $('mode1').addEventListener('click',()=>{ P.railMode=1; build(); });
-  $('tray').addEventListener('change',e=>{ P.tray=e.target.checked; build(); });
-  $('slots').addEventListener('change',e=>{ P.slots=e.target.checked; build(); });
 
   // ---------- Vistas ----------
   const VIEWS={
