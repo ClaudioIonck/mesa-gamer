@@ -421,6 +421,10 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       V(-bl,yf,bw),V(-bl,yf,W/2+off+0.02), V(bl,yf,bw),V(bl,yf,W/2+off+0.02),
       V(bl,yf,-bw),V(x2+0.02,yf,-bw), V(bl,yf,bw),V(x2+0.02,yf,bw)
     ]);
+    // espessura do tampo, no canto frontal esquerdo
+    const xt=-L/2-off;
+    dimLine(V(xt,yb,W/2),V(xt,H,W/2),V(1,0,0),()=>'tampo '+nu(P.topT));
+    extLines([V(-L/2,H,W/2),V(xt-0.02,H,W/2), V(-L/2,yb,W/2),V(xt-0.02,yb,W/2)]);
     // perfil do pé
     tag(V(-bl,0.16,bw+0.05),()=>'pé '+n(A)+' × '+n(B)+' '+unit);
     dimLine(V(-0.25,yb-0.002,(P.topW/2-P.inset)*MM),V(-0.25,yb-0.002,W/2),V(1,0,0),()=>nu(P.inset));
