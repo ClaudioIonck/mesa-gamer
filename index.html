@@ -134,6 +134,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   <button data-view="front" aria-pressed="false">Frontal</button>
   <button data-view="side" aria-pressed="false">Lateral</button>
   <button data-view="top" aria-pressed="false">Superior</button>
+  <button data-view="under" aria-pressed="false">Inferior</button>
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -185,7 +186,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   const controls=new THREE.OrbitControls(camera,renderer.domElement);
   controls.enableDamping=true; controls.dampingFactor=0.08;
   controls.minDistance=0.4; controls.maxDistance=8;
-  controls.maxPolarAngle=Math.PI*0.495;
+  controls.maxPolarAngle=Math.PI;   // giro livre: a câmera pode passar por baixo da mesa
 
   // ---------- Tema ----------
   function cssVar(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
@@ -525,12 +526,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     rear: {pos:[1.25,0.42,-2.2], tgt:[0,0.6,-0.1]},
     front:{pos:[0,0.42,3.4],     tgt:[0,0.38,0]},
     side: {pos:[3.2,0.42,0],     tgt:[0,0.38,0]},
-    top:  {pos:[0,3.6,0.0001],   tgt:[0,0.38,0]}
+    top:  {pos:[0,3.6,0.0001],   tgt:[0,0.38,0]},
+    under:{pos:[0.55,-1.5,0.9],  tgt:[0,0.62,0]}
   };
   let anim=null;
   function goTo(name,instant){
     const vw=VIEWS[name], toP=V(...vw.pos), toT=V(...vw.tgt);
-    controls.maxPolarAngle=name==='top'?Math.PI:Math.PI*0.495;
     if(instant||matchMedia('(prefers-reduced-motion: reduce)').matches){ camera.position.copy(toP); controls.target.copy(toT); controls.update(); return; }
     anim={t0:performance.now(),dur:900,fromP:camera.position.clone(),fromT:controls.target.clone(),toP,toT};
   }
@@ -561,7 +562,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       controls.target.lerpVectors(anim.fromT,anim.toT,e);
       if(k>=1) anim=null;
     }
-    controls.update(); renderer.render(scene,camera);
+    controls.update();
+    grid.visible=camera.position.y>0;   // abaixo do piso, esconde a grade para ver a parte de baixo
+    renderer.render(scene,camera);
     updateLabels(stage.clientWidth,stage.clientHeight);
     requestAnimationFrame(tick);
   }

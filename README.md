@@ -27,7 +27,7 @@ Para usar, abra o `index.html` no navegador. Não há build nem dependências lo
 ## Recursos do modelo
 
 - **Navegação:** girar 360°, zoom e mover a câmera com mouse ou toque (OrbitControls).
-- **Vistas rápidas:** Perspectiva, Traseira, Frontal, Lateral e Superior.
+- **Vistas rápidas:** Perspectiva, Traseira, Frontal, Lateral, Superior e Inferior (a câmera também pode girar por baixo da mesa).
 - **Cotas:** cotas desenhadas no modelo, com chave **mm / cm**.
 - **Folgas:** o painel mostra a folga entre o organizador e a travessa traseira e a distância dos furos das pontas até o quadro da base.
 
