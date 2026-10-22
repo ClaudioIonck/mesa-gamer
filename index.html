@@ -146,7 +146,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   const P = {
     topL:1400, topW:770, topT:35,
     inset:50, baseH:715,
-    tubeA:50, tubeB:30,                 // perfil retangular 50 x 30
+    tubeA:60, tubeB:40, tubeWall:1.5,   // metalon 60 x 40, chapa 16 (1,5 mm)
+    tabL:60, tabW:40, tabT:3, holeL:18, holeW:7,   // abas de fixação: 60 x 40 x 3 com furo oblongo 18 x 7
     railMode:2,                         // 2 = frente + trás · 1 = uma central
     rearSetback:240,                    // borda traseira do tampo → face de trás da travessa traseira
     tray:true,
@@ -244,7 +245,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   const woodEdgeMat=new THREE.MeshPhysicalMaterial({map:edgeMap,color:0xc9b49c,roughness:0.42,clearcoat:1,clearcoatRoughness:0.1,envMapIntensity:1.1});
   // Grafite escuro (referência de pintura #575B59). O albedo fica mais escuro que a referência
   // porque a luz do sol e o tone mapping clareiam a peça; assim a cor vista na tela bate com a amostra.
-  const steelMat=new THREE.MeshStandardMaterial({color:0x17191a,roughness:0.55,metalness:0.3});
+  // Aço carbono com pintura eletrostática preto fosco
+  const steelMat=new THREE.MeshStandardMaterial({color:0x0d0e0f,roughness:0.78,metalness:0.15});
 
   // ---------- Chapa perfurada ----------
   function perfTexture(wMM,hMM,opts){
@@ -266,7 +268,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   }
   function perfPanel(wMM,hMM,opts){
     const alpha=perfTexture(wMM,hMM,opts);
-    const mat=new THREE.MeshStandardMaterial({color:0x17191a,roughness:0.58,metalness:0.3,alphaMap:alpha,alphaTest:0.5,side:THREE.DoubleSide});
+    const mat=new THREE.MeshStandardMaterial({color:0x0d0e0f,roughness:0.78,metalness:0.15,alphaMap:alpha,alphaTest:0.5,side:THREE.DoubleSide});
     const mesh=new THREE.Mesh(new THREE.PlaneGeometry(wMM*MM,hMM*MM),mat);
     mesh.castShadow=true; mesh.receiveShadow=true;
     mesh.customDepthMaterial=new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking,alphaMap:alpha,alphaTest:0.5});
@@ -315,6 +317,18 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     return mesh;
   }
 
+  // ---------- Aba de fixação (chapa com furo oblongo) ----------
+  // cx, cz = centro (mm); sx, sz = tamanho em X e em Z (mm). O furo é sempre alongado em Z.
+  function tabMesh(cx,cz,sx,sz){
+    const sh=roundedRectPath(new THREE.Shape(),0,0,sx*MM,sz*MM,3*MM);
+    sh.holes.push(roundedRectPath(new THREE.Path(),0,0,P.holeW*MM,P.holeL*MM,(P.holeW/2-0.01)*MM));
+    const g=new THREE.ExtrudeGeometry(sh,{depth:P.tabT*MM,bevelEnabled:false,curveSegments:10});
+    g.rotateX(-Math.PI/2);
+    const m=new THREE.Mesh(g,steelMat); m.castShadow=true; m.receiveShadow=true;
+    m.position.set(cx*MM,(P.baseH-P.tabT)*MM,cz*MM);
+    return m;
+  }
+
   // ---------- Base, organizador e tampo (reconstruídos ao mudar opções) ----------
   let dyn=null;
   function disposeGroup(g){
@@ -340,6 +354,16 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     const longLen=baseL-2*B, yRail=(P.baseH-A/2)*MM;
     const railsZ = P.railMode===2 ? [baseW/2-B/2, rearEdge+P.rearSetback+B/2] : [0];
     railsZ.forEach(z=>{ const lg=box(longLen,A,B,steelMat); lg.position.set(0,yRail,z*MM); dyn.add(lg); });
+
+    // Abas superiores de fixação: chapas soldadas na face interna das travessas, rentes ao topo da base,
+    // com furo oblongo no sentido da largura do tampo (Z) para a madeira poder trabalhar.
+    const fx=baseL/2-B;                                   // face interna dos quadros
+    [-1,1].forEach(sx=>[-1,1].forEach(sz=>dyn.add(tabMesh(sx*(fx-P.tabW/2), sz*180, P.tabW, P.tabL))));
+    railsZ.forEach(z=>{
+      const dir = z>0 ? -1 : 1;                           // aba aponta para o centro da mesa
+      const face = z + dir*B/2;
+      [-450,0,450].forEach(x=>dyn.add(tabMesh(x, face+dir*P.tabW/2, P.tabL, P.tabW)));
+    });
 
     // Organizador de cabos
     if(P.tray){
@@ -483,7 +507,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       ['Recuo dos quadros', n(P.inset)],
       ['Vão da base (C × L)', n(baseL)+' × '+n(baseW)],
       ['Altura da base', n(P.baseH)],
-      ['Perfil metalon', n(P.tubeA)+' × '+n(P.tubeB)],
+      ['Metalon (aço carbono)', n(P.tubeA)+' × '+n(P.tubeB)],
+      ['Parede do tubo', 'chapa 16 · 1,5 mm'],
+      ['Abas de fixação', '10 × '+n(P.tabL)+' × '+n(P.tabW)],
+      ['Furo das abas (oblongo)', n(P.holeL)+' × '+n(P.holeW)],
+      ['Acabamento da base', 'eletrostática preto fosco'],
       ['Altura total', n(P.baseH)+' + '+n(P.topT)+' = '+n(P.baseH+P.topT)],
       P.railMode===2 ? ['Travessas','frente '+n(P.inset)+' · trás '+n(P.rearSetback)] : ['Travessa','única, central'],
       ['Organizador (C × P × A)', P.tray ? n(P.trayL)+' × '+n(P.trayD)+' × '+n(P.trayH) : 'não'],

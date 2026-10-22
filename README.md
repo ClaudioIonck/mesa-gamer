@@ -12,7 +12,8 @@ Para usar, abra o `index.html` no navegador. Não há build nem dependências lo
 | Altura total | 750 mm (base 715 + tampo 35) |
 | Recuo dos quadros da base | 50 mm em relação às 4 bordas do tampo |
 | Vão da base (C × L) | 1300 × 670 mm |
-| Perfil metálico (metalon) | 50 × 30 mm |
+| Base | quadro em aço carbono, metalon 60 × 40 mm, chapa 16 (1,5 mm), 715 mm de altura |
+| Abas de fixação | 10 abas superiores 60 × 40 × 3 mm, furo oblongo 18 × 7 mm no sentido da largura do tampo |
 | Travessas sob o tampo | frente a 50 mm da borda · trás a 240 mm do fundo |
 | Organizador de cabos | 1000 × 150 × 110 mm, chapa perfurada, a 60 mm do fundo |
 | Passa-cabos no tampo | 3 × (80 × 40 mm), centros a 200 · 700 · 1200 mm da borda esquerda e 135 mm do fundo |
@@ -22,7 +23,7 @@ Para usar, abra o `index.html` no navegador. Não há build nem dependências lo
 **Materiais**
 
 - **Tampo:** madeira maciça em tom nogueira médio-escuro, com verniz brilhante e acabamento liso.
-- **Base e organizador:** aço com pintura eletrostática grafite quase preto. A referência de tela é `#2B2E2F`; confirme com amostra ou catálogo RAL na hora de encomendar.
+- **Base e organizador:** aço carbono com pintura eletrostática preto fosco.
 
 ## Recursos do modelo
 
@@ -39,7 +40,7 @@ Todas as medidas ficam no objeto `P`, no início do script do `index.html`, semp
 const P = {
   topL:1400, topW:770, topT:35,   // tampo
   inset:50, baseH:715,            // recuo e altura da base
-  tubeA:50, tubeB:30,             // perfil metalon
+  tubeA:60, tubeB:40,             // perfil metalon
   rearSetback:240,                // recuo da travessa traseira
   trayL:1000, trayD:150, trayH:110,
   slotW:80, slotH:40, slotR:8,    // passa-cabos
