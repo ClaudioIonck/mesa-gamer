@@ -122,7 +122,17 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .modes button{font:500 13px var(--body);color:var(--fg);background:transparent;border:0;border-radius:999px;padding:8px 16px;cursor:pointer;white-space:nowrap}
 .modes button:hover{background:var(--btn)}
 .modes button[aria-pressed="true"]{background:var(--accent);color:#fff}
-body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hint,body.svg-mode .views{display:none}
+body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hint,body.svg-mode .views,body.svg-mode .dimsbar{display:none}
+/* ---------- Chave de cotas (canto inferior esquerdo) ---------- */
+.dimsbar{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:5;
+  display:flex;padding:4px;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:999px}
+.dimsbar button{display:inline-flex;align-items:center;gap:10px;font:500 13px var(--body);color:var(--fg);background:transparent;border:0;border-radius:999px;padding:6px 12px 6px 8px;cursor:pointer}
+.dimsbar button:hover{background:var(--btn)}
+.sw-track{position:relative;width:34px;height:20px;border-radius:999px;background:var(--line);transition:background .2s}
+.sw-track::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--fg);transition:transform .2s}
+.dimsbar button[aria-pressed="true"] .sw-track{background:var(--accent)}
+.dimsbar button[aria-pressed="true"] .sw-track::after{transform:translateX(14px);background:#fff}
+@media (prefers-reduced-motion: reduce){.sw-track,.sw-track::after{transition:none}}
 #sheetView{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg)}
 #sheetView[hidden]{display:none!important}
 .sheet-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:calc(12px + env(safe-area-inset-top,0px));padding-bottom:10px;
@@ -152,7 +162,7 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
 #sheetHost svg{user-select:none;-webkit-user-select:none}
 #sheetScroll.can-pan{cursor:grab}
 #sheetScroll.panning{cursor:grabbing}
-@media (max-width:760px){ .modes{bottom:calc(68px + env(safe-area-inset-bottom,0px))} body.svg-mode .modes{bottom:calc(16px + env(safe-area-inset-bottom,0px))} }
+@media (max-width:760px){ .dimsbar{bottom:calc(68px + env(safe-area-inset-bottom,0px))} .modes{bottom:calc(68px + env(safe-area-inset-bottom,0px))} body.svg-mode .modes{bottom:calc(16px + env(safe-area-inset-bottom,0px))} }
 @media (max-width:560px){
   .hint{display:none}
   .views button{padding:8px 10px;font-size:12.5px}
@@ -215,6 +225,10 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
   <button data-view="top" aria-pressed="false">Superior</button>
   <button data-view="under" aria-pressed="false">Inferior</button>
 </nav>
+
+<div class="dimsbar">
+  <button id="dimsToggle" aria-pressed="true" title="Mostrar ou esconder as cotas"><span class="sw-track" aria-hidden="true"></span>Cotas</button>
+</div>
 
 <nav class="modes" aria-label="Modo de visualização">
   <button data-mode="3d" aria-pressed="true">3D</button>
@@ -599,7 +613,10 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
     setDims(dimsOn);
   }
   function setDims(on){ dimsOn=on; dimGroup.visible=on; labels.forEach(l=>l.el.hidden=!on); }
-  document.getElementById('dims').addEventListener('change',e=>setDims(e.target.checked));
+  const dimsBox=document.getElementById('dims'), dimsBtn=document.getElementById('dimsToggle');
+  function syncDims(on){ setDims(on); dimsBox.checked=on; dimsBtn.setAttribute('aria-pressed',on); }
+  dimsBox.addEventListener('change',e=>syncDims(e.target.checked));
+  dimsBtn.addEventListener('click',()=>syncDims(!dimsOn));
 
   const pv=new THREE.Vector3();
   function updateLabels(w,h){
