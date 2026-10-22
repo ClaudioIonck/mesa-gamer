@@ -257,7 +257,7 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
   const P = {
     topL:1400, topW:770, topT:35,
     inset:50, baseH:715,
-    tubeA:60, tubeB:40, tubeWall:1.5,   // metalon 60 x 40, chapa 16 (1,5 mm)
+    tubeA:30, tubeB:30, tubeWall:1.5,   // metalon 30 x 30, chapa 16 (1,5 mm)
     tabL:60, tabW:40, tabT:3, holeL:18, holeW:7,   // abas de fixação: 60 x 40 x 3 com furo oblongo 18 x 7
     railMode:2,                         // 2 = frente + trás · 1 = uma central
     rearSetback:240,                    // borda traseira do tampo → face de trás da travessa traseira
@@ -785,7 +785,7 @@ function buildSheet(unit){
   function ground(x0,x1,y){ rect(x0,y,x1-x0,6,'gh'); line(x0,y,x1,y,'o'); }
 
   // ---------- Medidas do projeto (mm) ----------
-  const L=1400, W=770, T=35, H=750, BH=715, A=60, B=40, IN=50;
+  const L=1400, W=770, T=35, H=750, BH=715, A=30, B=30, IN=50;          // metalon 30 x 30
   const BL=1300, BW=670, FX=BL/2-B;         // FX = face interna dos quadros (610)
   const legZ=BW/2-A;                        // 275: face interna dos pés no sentido Z
   const RF=BW/2-B, RB=-W/2+240;             // travessa frontal: z 295..335 · traseira: z -145..-105
@@ -923,7 +923,7 @@ function buildSheet(unit){
   dimH(sx(BW/2),GY,sx(legZ),GY,GY+36,v(A));
   dimV(sx(-W/2),fy(H),sx(-BW/2),GY,sx(-W/2)+26,v(H));
   dimV(sx(0),fy(BH),sx(0),fy(BH-A),sx(0)+10,v(A));
-  dimH(sx(RB),fy(BH-A),sx(TR.z1),fy(TR.y0),fy(TR.y0)+16,'folga '+v(30),{left:true});
+  dimH(sx(RB),fy(BH-A),sx(TR.z1),fy(TR.y0),fy(TR.y0)+16,'folga '+v(RB-(-W/2+TR.z1+W/2)),{left:true});
   dimH(sx(TR.z1),fy(TR.y0),sx(TR.z0),fy(TR.y0),fy(TR.y0)+16,v(150));
 
   // ================= M02 — PLANTA =================
@@ -975,7 +975,7 @@ function buildSheet(unit){
   dimV(px(L/2-30),pz(-W/2),px(FX+B),pz(RB),px(L/2)+40,v(240));
   dimV(px(FX+B),pz(RF+B),px(L/2-30),pz(W/2),px(L/2)+40,v(IN));
   dimH(px(-TR.x),pz(TR.z1),px(TR.x),pz(TR.z1),pz(-28),'calha '+v(1000),{dx:-60});
-  dimH(px(SLX[2]+SW/2),null,px(FX),null,pz(SLZ),v(70));
+  dimH(px(SLX[2]+SW/2),null,px(FX),null,pz(SLZ),v(FX-SLX[2]-SW/2));
   dimH(px(-L/2),pz(W/2-30),px(-BL/2),pz(BW/2),P1+18,v(IN));
   dimH(px(-BL/2),pz(BW/2),px(BL/2),pz(BW/2),P1+18,v(BL));
   dimH(px(BL/2),pz(BW/2),px(L/2),pz(W/2-30),P1+18,v(IN));
@@ -1013,7 +1013,7 @@ function buildSheet(unit){
     dimV(x0,y0,x0,y0+h,x0-16,v(A));
     dimH(x0,y0+h,x0+w,y0+h,y0+h+16,v(B));
     leader(x0+w-2,y0+h*0.3,x0+w+30,y0+14,'PAREDE '+v(1.5)+' (CHAPA 16)');
-    text(x0+w+30,y0+48,'Aço carbono · tubo retangular','lts');
+    text(x0+w+30,y0+48,'Aço carbono · tubo quadrado','lts');
     text(x0+w+30,y0+64,'Pintura eletrostática','lts');
     text(x0+w+30,y0+78,'preto fosco','lts');
     text(x0+w+30,y0+94,'Soldas contínuas e lixadas','lts');
