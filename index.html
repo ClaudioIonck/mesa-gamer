@@ -522,8 +522,9 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
 
   // ---------- Cotas 3D ----------
   const dimGroup=new THREE.Group(); scene.add(dimGroup);
-  const dimMat=new THREE.LineBasicMaterial({color:0xb0662a});
-  const extMat=new THREE.LineBasicMaterial({color:0xb0662a,transparent:true,opacity:0.5});
+  // Cotas em vermelho vivo (mesmo padrão da prancha técnica): contrastam com a madeira, o aço preto e o fundo
+  const dimMat=new THREE.LineBasicMaterial({color:0xff2d2d});
+  const extMat=new THREE.LineBasicMaterial({color:0xff2d2d,transparent:true,opacity:0.75});
   const labelsEl=document.getElementById('labels');
   let labels=[], dimsOn=true;
   const V=(x,y,z)=>new THREE.Vector3(x,y,z);
