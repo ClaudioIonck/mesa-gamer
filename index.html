@@ -124,17 +124,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <button id="mode2" aria-pressed="true">Frente + trás</button>
       <button id="mode1" aria-pressed="false">Uma central</button>
     </div>
-    <div class="field" id="rearField">
-      <label for="rear">Recuo da travessa traseira <output id="rearOut"></output></label>
-      <input type="range" id="rear" min="50" max="400" step="10" value="250">
-    </div>
 
     <h2>Organizador e passa-cabos</h2>
     <label class="toggle"><input type="checkbox" id="tray" checked> Organizador de cabos no fundo</label>
-    <div class="field" id="trayField">
-      <label for="trayLen">Comprimento do organizador <output id="trayLenOut"></output></label>
-      <input type="range" id="trayLen" min="600" max="1200" step="50" value="1000">
-    </div>
     <label class="toggle"><input type="checkbox" id="slots" checked> 3 passa-cabos no tampo</label>
     <div class="chip ok" id="chip"></div>
 
@@ -167,7 +159,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     inset:50, baseH:715,
     tubeA:50, tubeB:30,                 // perfil retangular 50 x 30
     railMode:2,                         // 2 = frente + trás · 1 = uma central
-    rearSetback:250,                    // borda traseira do tampo → face de trás da travessa traseira
+    rearSetback:240,                    // borda traseira do tampo → face de trás da travessa traseira
     tray:true,
     trayL:1000, trayD:150, trayH:110, trayLip:35, trayGap:60,   // organizador
     slots:true, slotW:80, slotH:40, slotR:8,                    // passa-cabos: 80 (ao longo do comprimento) × 40, cantos r8
@@ -496,10 +488,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
     $('mode2').setAttribute('aria-pressed',P.railMode===2);
     $('mode1').setAttribute('aria-pressed',P.railMode===1);
-    $('rearField').setAttribute('aria-disabled',P.railMode!==2);
-    $('rear').disabled=P.railMode!==2;
-    $('rearOut').textContent=nu(P.rearSetback);
-    $('trayLenOut').textContent=nu(P.trayL);
 
     // Verificações
     const msgs=[]; let bad=false;
@@ -526,9 +514,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   $('uCM').addEventListener('click',()=>setUnit('cm'));
   $('mode2').addEventListener('click',()=>{ P.railMode=2; build(); });
   $('mode1').addEventListener('click',()=>{ P.railMode=1; build(); });
-  $('rear').addEventListener('input',e=>{ P.rearSetback=+e.target.value; build(); });
-  $('tray').addEventListener('change',e=>{ P.tray=e.target.checked; $('trayField').setAttribute('aria-disabled',!P.tray); $('trayLen').disabled=!P.tray; build(); });
-  $('trayLen').addEventListener('input',e=>{ P.trayL=+e.target.value; build(); });
+  $('tray').addEventListener('change',e=>{ P.tray=e.target.checked; build(); });
   $('slots').addEventListener('change',e=>{ P.slots=e.target.checked; build(); });
 
   // ---------- Vistas ----------

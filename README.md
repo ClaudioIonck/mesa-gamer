@@ -13,7 +13,7 @@ Para usar, abra o `index.html` no navegador. Não há build nem dependências lo
 | Recuo dos quadros da base | 50 mm em relação às 4 bordas do tampo |
 | Vão da base (C × L) | 1300 × 670 mm |
 | Perfil metálico (metalon) | 50 × 30 mm |
-| Travessas sob o tampo | frente a 50 mm da borda · trás a 250 mm do fundo (ajustável) |
+| Travessas sob o tampo | frente a 50 mm da borda · trás a 240 mm do fundo |
 | Organizador de cabos | 1000 × 150 × 110 mm, chapa perfurada, a 60 mm do fundo |
 | Passa-cabos no tampo | 3 × (80 × 40 mm), centros a 200 · 700 · 1200 mm da borda esquerda e 135 mm do fundo |
 | Boleado das arestas e dos furos | raio 5 mm |
@@ -29,8 +29,8 @@ Para usar, abra o `index.html` no navegador. Não há build nem dependências lo
 - **Navegação:** girar 360°, zoom e mover a câmera com mouse ou toque (OrbitControls).
 - **Vistas rápidas:** Perspectiva, Traseira, Frontal, Lateral e Superior.
 - **Cotas:** cotas desenhadas no modelo, com chave **mm / cm**.
-- **Travessas:** escolha entre "frente + trás" ou "uma central", e ajuste o recuo da travessa traseira.
-- **Organizador e passa-cabos:** comprimento do organizador ajustável e passa-cabos que podem ser ligados ou desligados.
+- **Travessas:** compare "frente + trás" com "uma central".
+- **Organizador e passa-cabos:** podem ser mostrados ou ocultados no modelo.
 - **Avisos:** o modelo avisa quando há conflito entre o organizador e a travessa, ou entre os furos e o quadro da base.
 
 ## Ajustes no código
@@ -42,7 +42,7 @@ const P = {
   topL:1400, topW:770, topT:35,   // tampo
   inset:50, baseH:715,            // recuo e altura da base
   tubeA:50, tubeB:30,             // perfil metalon
-  rearSetback:250,                // recuo da travessa traseira
+  rearSetback:240,                // recuo da travessa traseira
   trayL:1000, trayD:150, trayH:110,
   slotW:80, slotH:40, slotR:8,    // passa-cabos
   edgeR:5, cornerR:25             // boleado e cantos
