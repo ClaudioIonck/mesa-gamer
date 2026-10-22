@@ -133,6 +133,9 @@ body.svg-mode #stage,body.svg-mode #labels,body.svg-mode .card,body.svg-mode .hi
 #sheetHost{width:100%;margin:0 auto}
 #sheetHost.zoomed{max-width:none}
 #sheetHost svg{display:block;width:100%;height:auto;border-radius:3px;box-shadow:0 10px 40px rgba(0,0,0,.22)}
+#sheetHost svg{user-select:none;-webkit-user-select:none}
+#sheetScroll.can-pan{cursor:grab}
+#sheetScroll.panning{cursor:grabbing}
 @media (max-width:760px){ .modes{bottom:calc(68px + env(safe-area-inset-bottom,0px))} body.svg-mode .modes{bottom:calc(16px + env(safe-area-inset-bottom,0px))} }
 @media (max-width:560px){
   .hint{display:none}
@@ -1096,6 +1099,7 @@ if(typeof module!=='undefined') module.exports={buildSheet};
     const prev=zoom; zoom=Math.min(6,Math.max(1,z));
     const cx=(scroller.scrollLeft+scroller.clientWidth/2)/scroller.scrollWidth, cy=(scroller.scrollTop+scroller.clientHeight/2)/scroller.scrollHeight;
     host.classList.toggle('zoomed',zoom>1);
+    scroller.classList.toggle('can-pan',zoom>1);
     host.style.width=(zoom*100)+'%';
     $('zFit').textContent=Math.round(zoom*100)+'%';
     if(prev!==zoom){ scroller.scrollLeft=cx*scroller.scrollWidth-scroller.clientWidth/2; scroller.scrollTop=cy*scroller.scrollHeight-scroller.clientHeight/2; }
@@ -1117,6 +1121,27 @@ if(typeof module!=='undefined') module.exports={buildSheet};
   $('zOut').addEventListener('click',()=>setZoom(zoom/1.5));
   $('zFit').addEventListener('click',()=>setZoom(1));
   scroller.addEventListener('wheel',e=>{ if(e.ctrlKey||e.metaKey){ e.preventDefault(); setZoom(zoom*(e.deltaY<0?1.15:1/1.15)); } },{passive:false});
+  // Arrastar com o mouse para mover a prancha quando há zoom (no toque, a rolagem nativa já faz isso)
+  let pan=null;
+  scroller.addEventListener('pointerdown',e=>{
+    if(e.pointerType!=='mouse' || e.button!==0 || zoom<=1) return;
+    const r=scroller.getBoundingClientRect(); if(e.clientX-r.left>=scroller.clientWidth || e.clientY-r.top>=scroller.clientHeight) return;   // clique na barra de rolagem
+    pan={x:e.clientX,y:e.clientY,l:scroller.scrollLeft,t:scroller.scrollTop,id:e.pointerId};
+    scroller.setPointerCapture(e.pointerId); scroller.classList.add('panning'); e.preventDefault();
+  });
+  scroller.addEventListener('pointermove',e=>{
+    if(!pan || e.pointerId!==pan.id) return;
+    scroller.scrollLeft=pan.l-(e.clientX-pan.x);
+    scroller.scrollTop=pan.t-(e.clientY-pan.y);
+  });
+  const endPan=e=>{ if(!pan) return; try{ scroller.releasePointerCapture(pan.id); }catch(_){} pan=null; scroller.classList.remove('panning'); };
+  scroller.addEventListener('pointerup',endPan); scroller.addEventListener('pointercancel',endPan);
+  // Setas do teclado também movem
+  scroller.tabIndex=0;
+  scroller.addEventListener('keydown',e=>{
+    const d=80, m={ArrowLeft:[-d,0],ArrowRight:[d,0],ArrowUp:[0,-d],ArrowDown:[0,d]}[e.key];
+    if(m){ scroller.scrollBy(m[0],m[1]); e.preventDefault(); }
+  });
   // ---------- Download (SVG / PNG) ----------
   const dlBtn=$('dlBtn'), dlMenu=$('dlMenu'), dlStatus=$('dlStatus');
   function openMenu(open){ dlMenu.hidden=!open; dlBtn.setAttribute('aria-expanded',open); if(open) dlMenu.querySelector('button').focus(); }
