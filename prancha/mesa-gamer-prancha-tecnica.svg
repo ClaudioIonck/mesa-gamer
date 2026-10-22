@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 990" width="1400" height="990" font-family="'JetBrains Mono',ui-monospace,Menlo,monospace">
-<title>Mesa Gamer 1400 — Prancha técnica</title>
+<title>Mesa Gamer — Prancha técnica</title>
 <defs>
   <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6.5" markerHeight="6.5" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,1.6 L10,5 L0,8.4 z" fill="#d0262b"/></marker>
   <pattern id="hw" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)"><rect width="5" height="5" fill="#f3e9db"/><line x1="0" y1="0" x2="0" y2="5" stroke="#9b7650" stroke-width=".6"/></pattern>
@@ -455,7 +455,7 @@
 <text x="594" y="931.5" class="tv">Madeira maciça</text>
 <rect x="690" y="924" width="14" height="9" class="steel"/>
 <text x="710" y="931.5" class="tv">Aço carbono</text>
-<text x="846" y="860" class="big">MESA GAMER 1400</text>
+<text x="846" y="860" class="big">MESA GAMER</text>
 <text x="846" y="876" class="tk">DESENHO TÉCNICO EXECUTIVO · MARCENARIA E SERRALHERIA</text>
 <rect x="840" y="892" width="172" height="32" class="frame2"/>
 <text x="846" y="903" class="tk">ESCALA</text>

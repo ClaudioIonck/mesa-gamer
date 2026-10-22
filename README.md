@@ -1,4 +1,4 @@
-# Mesa Gamer 1400
+# Mesa Gamer
 
 Modelo 3D interativo e parametrizado da mesa gamer, feito em HTML + [Three.js](https://threejs.org/) (r128), para visualizar o projeto e passar as medidas ao marceneiro e à serralheria.
 
